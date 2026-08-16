@@ -1018,11 +1018,22 @@ class PhysicsItem {
       } else if (this.type === 'creamCheese') {
         ctx.fillStyle = '#ffffff';
         ctx.strokeStyle = '#6c88ff';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.roundRect(-24, -14, 48, 28, 8);
+        ctx.roundRect(-28, -16, 56, 32, 10);
         ctx.fill();
         ctx.stroke();
+
+        ctx.fillStyle = '#ff65a3';
+        ctx.beginPath();
+        ctx.roundRect(-30, -20, 60, 9, 4);
+        ctx.fill();
+
+        ctx.fillStyle = '#6c88ff';
+        ctx.font = 'bold 8px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CREAM', 0, -1);
+        ctx.fillText('CHEESE', 0, 8);
       } else {
         ctx.fillStyle = '#f7ca38';
         ctx.beginPath();
