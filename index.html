@@ -91,9 +91,32 @@
 </head>
 <body>
 
-    <header>
-        <h1>Welcome to Sameyed33.com!</h1>
-    </header>
+    <h1 class="cartoon-welcome">Welcome to Samoyed33.com!</h1>
+    
+    <style>
+    .cartoon-welcome {
+        font-size: 2.6rem;
+        font-weight: 900;
+        text-align: center;
+        color: #ff6b8b;
+        margin-bottom: 40px;
+        padding: 20px 0;
+        
+        /* Creates a bold 3D pop and outline effect */
+        text-shadow: 
+            -2px -2px 0 #fff,  
+             2px -2px 0 #fff,
+            -2px  2px 0 #fff,
+             2px  2px 0 #fff,
+             4px  4px 0px rgba(0, 0, 0, 0.08);
+    }
+    
+    @media (max-width: 768px) {
+        .cartoon-welcome {
+            font-size: 1.8rem;
+        }
+    }
+    </style>
 
     <!-- Main Image Collection Container -->
     <!-- Simply duplicate an item block below to expand your list -->
