@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everything Is a Bagel</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --cream: #fff8e8;
+  --cream2: #fff1cf;
+  --pink: #ff5fa2;
+  --hotpink: #ff3f8e;
+  --yellow: #ffd447;
+  --orange: #ff9f43;
+  --blue: #6c7cff;
+  --purple: #9b6cff;
+  --green: #54d68c;
+  --ink: #29233d;
+  --muted: #756d82;
+  --white: #ffffff;
+  --shadow: 0 8px 0 rgba(41,35,61,.12);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Baloo 2", sans-serif;
+  color: var(--ink);
+  background: #fffdf5;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* -------------------- DYNAMIC COLOR-CHANGING BACKGROUND -------------------- */
+
+.bg-blobs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.6;
+  animation: floatMove 18s ease-in-out infinite alternate, colorShift 12s linear infinite alternate;
+}
+
+.blob.one {
+  width: 350px;
+  height: 350px;
+  top: -50px;
+  left: -50px;
+  background: var(--pink);
+}
+
+.blob.two {
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  right: -50px;
+  background: var(--blue);
+  animation-delay: -5s, -3s;
+}
+
+.blob.three {
+  width: 300px;
+  height: 300px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--yellow);
+  animation-delay: -10s, -7s;
+}
+
+@keyframes floatMove {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -40px) scale(1.15); }
+  100% { transform: translate(-40px, 50px) scale(0.9); }
+}
+
+@keyframes colorShift {
+  0% { background: var(--pink); }
+  33% { background: var(--blue); }
+  66% { background: var(--yellow); }
+  100% { background: var(--green); }
+}
+
+/* -------------------- BAGELS -------------------- */
+
+.bagel {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #d99345;
+  border: 13px solid #f5b95d;
+  box-shadow: inset 0 0 0 5px #c77d32, 0 8px 0 rgba(80,50,30,.12);
+  z-index: -1;
+  opacity: .75;
+}
+
+.bagel::after {
+  content: "";
+  position: absolute;
+  width: 23px;
+  height: 23px;
+  background: var(--cream);
+  border-radius: 50%;
+  left: 16px;
+  top: 16px;
+}
+
+.bagel.one { top: 9%; left: 3%; transform: rotate(-20deg); }
+.bagel.two { right: 4%; bottom: 12%; transform: rotate(25deg) scale(.8); }
+.bagel.three { top: 45%; right: 1%; transform: rotate(10deg) scale(.55); }
+
+/* -------------------- APP -------------------- */
+
+.app {
+  width: min(1100px, 94%);
+  margin: auto;
+  padding: 28px 0 60px;
+}
+
+header { text-align: center; margin-bottom: 22px; }
+
+.logo {
+  display: inline-block;
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: .85;
+  font-weight: 800;
+  color: var(--pink);
+  text-shadow: 4px 4px 0 var(--yellow), 7px 7px 0 var(--blue);
+  transform: rotate(-2deg);
+  animation: logoBounce 2.5s ease-in-out infinite;
+}
+
+.subtitle {
+  margin-top: 15px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+@keyframes logoBounce {
+  0%,100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(2deg) translateY(-5px); }
+}
+
+/* -------------------- NAV -------------------- */
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 22px auto 30px;
+}
+
+button {
+  border: 0;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  box-shadow: 0 5px 0 #ddd4c6;
+  font-size: 1rem;
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px) rotate(-1deg);
+  box-shadow: 0 8px 0 #ddd4c6;
+}
+
+.nav-btn.active {
+  background: var(--pink);
+  color: white;
+  box-shadow: 0 5px 0 #d93476;
+}
+
+/* -------------------- PAGES -------------------- */
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* -------------------- HOME -------------------- */
+
+.hero-card {
+  background: rgba(255,255,255,.9);
+  backdrop-filter: blur(10px);
+  border-radius: 35px;
+  padding: 35px;
+  box-shadow: 0 12px 0 rgba(255,95,162,.15);
+  text-align: center;
+  border: 4px solid white;
+}
+
+.hero-card h1 { margin: 0; font-size: 2.3rem; }
+.hero-card p { font-family: "Space Mono", monospace; color: var(--muted); }
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.mode-card {
+  padding: 27px 20px;
+  border-radius: 28px;
+  color: white;
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform .18s;
+}
+
+.mode-card:hover { transform: translateY(-7px) rotate(-1deg); }
+.mode-card.classic { background: linear-gradient(145deg, #ff65a8, #ff3f8e); }
+.mode-card.speed { background: linear-gradient(145deg, #ffb347, #ff7a45); }
+.mode-card.maze { background: linear-gradient(145deg, #8c7cff, #655cff); }
+.mode-icon { font-size: 3.2rem; }
+.mode-card h2 { margin: 0; font-size: 1.8rem; }
+.mode-card p { margin: 0; font-weight: 700; }
+
+/* -------------------- GAME -------------------- */
+
+.game-card {
+  background: rgba(255,255,255,.93);
+  backdrop-filter: blur(12px);
+  border-radius: 35px;
+  padding: 30px;
+  box-shadow: 0 12px 0 rgba(41,35,61,.1);
+  border: 4px solid white;
+}
+
+.game-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.mode-label { font-size: 1.5rem; font-weight: 800; }
+.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat {
+  padding: 8px 15px;
+  background: var(--cream2);
+  border-radius: 999px;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+}
+
+.word-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.word-node {
+  min-width: 140px;
+  padding: 16px 22px;
+  border-radius: 25px;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: white;
+  border: 5px solid var(--yellow);
+  box-shadow: 0 8px 0 #e4b92f;
+  animation: nodePop .35s ease;
+}
+
+.word-node.target {
+  border-color: var(--blue);
+  box-shadow: 0 8px 0 #514dc5;
+}
+
+.arrow { font-size: 2rem; color: var(--pink); font-weight: 800; }
+
+.chain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 55px;
+  margin: 15px 0 25px;
+}
+
+.chain-word {
+  background: #f0edff;
+  color: #5749b7;
+  border-radius: 15px;
+  padding: 8px 14px;
+  font-weight: 800;
+  animation: pop .25s ease;
+}
+
+.chain-word.current { background: var(--pink); color: white; }
+
+@keyframes pop {
+  from { transform: scale(.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  max-width: 700px;
+  margin: auto;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 20px;
+  border-radius: 20px;
+  border: 4px solid #ddd6ff;
+  outline: none;
+  font-family: "Baloo 2", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+}
+
+input:focus { border-color: var(--pink); }
+input:disabled { background: #eee; cursor: not-allowed; }
+
+.connect-btn {
+  padding: 15px 25px;
+  border-radius: 20px;
+  background: var(--pink);
+  color: white;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 0 #d93476;
+}
+
+.connect-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 0 #d93476;
+}
+
+.connect-btn:disabled {
+  background: #ccc;
+  box-shadow: 0 6px 0 #aaa;
+  cursor: not-allowed;
+}
+
+.feedback {
+  min-height: 35px;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.feedback.good { color: #1ba45b; }
+.feedback.bad { color: #e45b73; }
+
+/* -------------------- MAZE -------------------- */
+
+.maze-intro { text-align: center; margin-bottom: 20px; }
+.maze-board {
+  position: relative;
+  min-height: 480px;
+  border-radius: 35px;
+  padding: 20px;
+  background: radial-gradient(circle, rgba(108,124,255,.13) 1px, transparent 1px);
+  background-size: 25px 25px;
+  border: 4px dashed #c5bcff;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 15px;
+  align-items: center;
+  justify-items: center;
+}
+
+.maze-word {
+  padding: 14px 18px;
+  background: white;
+  border: 4px solid var(--yellow);
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  box-shadow: 0 6px 0 #e2b92f;
+  cursor: pointer;
+  transition: .2s;
+  z-index: 2;
+  width: 90%;
+  max-width: 160px;
+  text-align: center;
+}
+
+.maze-word:hover { transform: scale(1.05) rotate(-2deg); }
+.maze-word.used {
+  background: var(--pink);
+  color: white;
+  border-color: #ff9fc7;
+  box-shadow: 0 6px 0 #d93476;
+}
+.maze-word.current-head {
+  border-color: var(--blue);
+  box-shadow: 0 6px 0 #514dc5;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse { 50% { transform: scale(1.08); } }
+
+/* -------------------- RESULTS & INFO -------------------- */
+
+.result {
+  text-align: center;
+  padding: 30px;
+  background: white;
+  border-radius: 30px;
+  margin-top: 25px;
+  display: none;
+}
+.result h2 { font-size: 2.8rem; color: var(--pink); margin: 0; }
+.result button {
+  margin: 10px 5px 0;
+  padding: 12px 22px;
+  border-radius: 18px;
+  background: var(--blue);
+  color: white;
+  font-size: 1rem;
+}
+
+.info-card {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 35px;
+  border-radius: 35px;
+  box-shadow: var(--shadow);
+}
+.info-card h1 { color: var(--pink); font-size: 2.8rem; margin-top: 0; }
+.info-card h2 { color: var(--purple); }
+
+.score-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.score-tab { padding: 10px 20px; border-radius: 999px; background: var(--cream2); }
+.score-tab.active { background: var(--pink); color: white; }
+.score-list { list-style: none; padding: 0; }
+.score-list li {
+  background: #faf8ff;
+  padding: 15px;
+  margin: 8px 0;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+}
+
+@media (max-width: 750px) {
+  .mode-grid { grid-template-columns: 1fr; }
+  .maze-board { grid-template-columns: repeat(2, 1fr); }
+  .input-area { flex-direction: column; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- DYNAMIC MOVING BACKGROUND BLOBS -->
+<div class="bg-blobs">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+</div>
+
+<div class="bagel one"></div>
+<div class="bagel two"></div>
+<div class="bagel three"></div>
+
+<div class="app">
+
+<header>
+  <div class="logo">EVERYTHING<br>IS A BAGEL</div>
+  <div class="subtitle">A very serious word game about connecting very unserious things.</div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showPage('home')">🏠 HOME</button>
+  <button class="nav-btn" onclick="showPage('how')">❓ HOW TO PLAY</button>
+  <button class="nav-btn" onclick="showPage('scores')">🏆 HIGH SCORES</button>
+</nav>
+
+<!-- HOME PAGE -->
+<section id="home" class="page active">
+  <div class="hero-card">
+    <h1>How fast can your brain make a bagel?</h1>
+    <p>Connect words. Think sideways. Make weird connections.</p>
+
+    <div class="mode-grid">
+      <div class="mode-card classic" onclick="startClassic()">
+        <div class="mode-icon">🧠</div>
+        <div>
+          <h2>CLASSIC</h2>
+          <p>Find the shortest path.</p>
+        </div>
+      </div>
+
+      <div class="mode-card speed" onclick="startSpeedrun()">
+        <div class="mode-icon">⚡</div>
+        <div>
+          <h2>SPEEDRUN</h2>
+          <p>Think fast. Get faster.</p>
+        </div>
+      </div>
+
+      <div class="mode-card maze" onclick="startMaze()">
+        <div class="mode-icon">🌀</div>
+        <div>
+          <h2>MAZE</h2>
+          <p>Connect every word.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAME PLAY PAGE -->
+<section id="game" class="page">
+  <div class="game-card">
+    <div class="game-top">
+      <div class="mode-label" id="modeLabel">CLASSIC</div>
+      <div class="stats">
+        <div class="stat" id="scoreDisplay">Score: 0</div>
+        <div class="stat" id="timerDisplay">⏱ 30</div>
+      </div>
+    </div>
+
+    <div id="classicArea">
+      <div class="word-stage">
+        <div class="word-node" id="startWord">CAT</div>
+        <div class="arrow">→</div>
+        <div class="word-node target" id="targetWord">WINTER</div>
+      </div>
+    </div>
+
+    <div id="mazeArea" style="display:none;">
+      <div class="maze-intro">
+        <h2>🌀 FIND YOUR WAY THROUGH THE MAZE!</h2>
+        <p>Click a word to start, then click connected adjacent words.</p>
+      </div>
+      <div class="maze-board" id="mazeBoard"></div>
+      <div class="chain" id="mazeChain" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="normalInput">
+      <div class="chain" id="chain"></div>
+      <div class="input-area">
+        <input
+          id="wordInput"
+          type="text"
+          placeholder="Type a related word..."
+          autocomplete="off"
+          onkeydown="if(event.key==='Enter') connectWord()"
+        >
+        <button id="connectBtn" class="connect-btn" onclick="connectWord()">CONNECT! ✨</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="result" id="result">
+      <h2 id="resultTitle">YOU DID IT!</h2>
+      <p id="resultText"></p>
+      <button onclick="restartCurrent()">PLAY AGAIN</button>
+      <button onclick="showPage('home')">HOME</button>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO PLAY -->
+<section id="how" class="page">
+  <div class="info-card">
+    <h1>HOW TO PLAY 🥯</h1>
+    <h2>CLASSIC 🧠</h2>
+    <p>Connect the start word to the target word in as few steps as possible.</p>
+    <h2>SPEEDRUN ⚡</h2>
+    <p>Solve as many word targets as you can before the timer runs out. Each cleared target rewards bonus seconds!</p>
+    <h2>MAZE 🌀</h2>
+    <p>Click through the word grid to form one unbroken chain visiting every single word node.</p>
+  </div>
+</section>
+
+<!-- SCORES PAGE -->
+<section id="scores" class="page">
+  <div class="info-card">
+    <h1>HIGH SCORES 🏆</h1>
+    <div class="score-tabs">
+      <button class="score-tab active" onclick="showScores('classic')">CLASSIC</button>
+      <button class="score-tab" onclick="showScores('speed')">SPEEDRUN</button>
+      <button class="score-tab" onclick="showScores('maze')">MAZE</button>
+    </div>
+    <ul class="score-list" id="scoreList"></ul>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* =========================================================
+   WORD ASSOCIATIONS & DICTIONARY GRAPH
+   ========================================================= */
+
+const graph = {
+  // Animals & Pets (Bidirectional by logic)
+  cat: ["eye", "fur", "dog", "pet", "animal", "meow", "paw", "tail", "kitten", "mouse", "whiskers", "milk"],
+  dog: ["cat", "pet", "animal", "fur", "paw", "tail", "puppy", "bark", "bone", "leash", "walk"],
+  pet: ["cat", "dog", "animal", "home", "bird", "fish", "rabbit", "care", "cage", "feed"],
+  animal: ["cat", "dog", "pet", "nature", "fur", "zoo", "wild", "forest", "bear", "lion", "tiger"],
+  mouse: ["cat", "cheese", "small", "rat", "trap", "hole", "squeak"],
+  fish: ["water", "ocean", "sea", "swim", "pet", "gill", "sushi", "aquarium", "river"],
+
+  // Food & Breakfast
+  bagel: ["bread", "breakfast", "cream", "cheese", "food", "coffee", "doughnut", "toast", "bakery", "hole", "everything"],
+  bread: ["bagel", "food", "toast", "sandwich", "bakery", "butter", "wheat", "flour"],
+  coffee: ["breakfast", "bagel", "cream", "hot", "drink", "cup", "morning", "caffeine", "tea", "mug"],
+  cheese: ["food", "pizza", "bagel", "cream", "mouse", "yellow", "milk", "slice"],
+  cream: ["ice", "sweet", "dessert", "cake", "food", "coffee", "bagel", "whipped"],
+  pizza: ["cheese", "food", "sauce", "italian", "slice", "crust", "dinner", "pepperoni"],
+  cake: ["dessert", "sweet", "cream", "birthday", "food", "chocolate", "bake", "candle"],
+  breakfast: ["bagel", "coffee", "morning", "egg", "pancake", "bacon", "food", "toast"],
+
+  // Nature & Weather
+  sun: ["hot", "summer", "sky", "light", "beach", "bright", "yellow", "star", "day", "warmth"],
+  hot: ["sun", "summer", "fire", "cold", "heat", "spicy", "beach", "coffee", "warm"],
+  cold: ["blue", "ice", "winter", "snow", "water", "coat", "freeze", "chilly", "shiver"],
+  winter: ["cold", "snow", "ice", "coat", "white", "ski", "holiday", "season", "december"],
+  snow: ["ice", "cold", "winter", "white", "snowman", "ski", "flake", "storm"],
+  ice: ["cold", "snow", "cream", "winter", "water", "skate", "cube", "glacier"],
+  rain: ["water", "cloud", "storm", "weather", "umbrella", "wet", "puddle", "drop"],
+  cloud: ["sky", "rain", "white", "soft", "storm", "weather", "fluffy", "puff"],
+  sky: ["blue", "cloud", "sun", "space", "star", "rain", "bird", "plane", "night"],
+  ocean: ["blue", "water", "sea", "summer", "beach", "fish", "wave", "salt", "deep"],
+  beach: ["ocean", "summer", "sand", "sun", "vacation", "water", "swim", "towel", "shell"],
+
+  // Colors & Qualities
+  blue: ["eye", "sky", "ocean", "cold", "color", "water", "sad", "navy"],
+  white: ["snow", "cloud", "color", "milk", "paper", "clean", "bright"],
+  yellow: ["sun", "color", "bright", "flower", "cheese", "lemon", "banana"],
+  pink: ["color", "flower", "love", "cake", "candy", "rose", "pig"],
+  bright: ["light", "sun", "yellow", "color", "star", "day", "shiny"],
+  soft: ["fur", "cloud", "pillow", "blanket", "cat", "bed", "smooth"],
+
+  // Bed & Night
+  sleep: ["bed", "night", "dream", "tired", "pillow", "blanket", "rest", "snooze"],
+  night: ["dark", "moon", "sleep", "sky", "star", "black", "late", "shadow"],
+  moon: ["night", "sky", "space", "star", "crater", "orbit", "silver"],
+  space: ["sky", "moon", "star", "planet", "earth", "rocket", "alien", "galaxy"],
+  star: ["space", "sky", "night", "bright", "shine", "famous", "wish"]
+};
+
+/* SYMMETRIC & FLEXIBLE CONNECTION CHECK */
+function cleanWord(w) {
+  return (w || "").toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+}
+
+function areConnected(w1, w2) {
+  const a = cleanWord(w1);
+  const b = cleanWord(w2);
+
+  if (!a || !b || a === b) return false;
+
+  // Strict Symmetric Check: (A -> B OR B -> A)
+  if (graph[a] && graph[a].includes(b)) return true;
+  if (graph[b] && graph[b].includes(a)) return true;
+
+  // Partial Root/Substring Matching (e.g., snow -> snowman)
+  if (a.length > 3 && b.length > 3) {
+    if (a.includes(b) || b.includes(a)) return true;
+  }
+
+  return false;
+}
+
+/* =========================================================
+   GAME STATE & CONTROL
+   ========================================================= */
+
+let currentPage = "home";
+let currentMode = null;
+let gameActive = false;
+
+let currentWord = "";
+let targetWord = "";
+let chain = [];
+
+let timer = null;
+let timeLeft = 30;
+let speedRound = 0;
+
+let mazeWords = [];
+let mazeUsed = [];
+let mazeCurrent = null;
+
+const classicPuzzles = [
+  ["CAT", "WINTER"],
+  ["SUN", "ICE"],
+  ["DOG", "OCEAN"],
+  ["BAGEL", "SPACE"],
+  ["COFFEE", "SNOW"],
+  ["BEACH", "MOON"]
+];
+
+function setInputState(enabled) {
+  const input = document.getElementById("wordInput");
+  const btn = document.getElementById("connectBtn");
+  input.disabled = !enabled;
+  btn.disabled = !enabled;
+  if (enabled) {
+    input.focus();
+  } else {
+    input.blur();
+  }
+}
+
+function showPage(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach((btn, i) => {
+    btn.classList.toggle("active", (page === 'home' && i===0) || (page === 'how' && i===1) || (page === 'scores' && i===2));
+  });
+
+  currentPage = page;
+  if (page !== "game") stopTimer();
+}
+
+/* CLASSIC MODE */
+function startClassic() {
+  currentMode = "classic";
+  gameActive = true;
+  const puzzle = classicPuzzles[Math.floor(Math.random() * classicPuzzles.length)];
+
+  currentWord = puzzle[0];
+  targetWord = puzzle[1];
+  chain = [currentWord];
+
+  document.getElementById("modeLabel").textContent = "🧠 CLASSIC";
+  document.getElementById("scoreDisplay").textContent = "Words: 1";
+  document.getElementById("timerDisplay").style.display = "none";
+
+  document.getElementById("classicArea").style.display = "block";
+  document.getElementById("mazeArea").style.display = "none";
+  document.getElementById("normalInput").style.display = "block";
+
+  document.getElementById("startWord").textContent = currentWord;
+  document.getElementById("targetWord").textContent = targetWord;
+
+  setInputState(true);
+  hideResult();
+  updateChain();
+  showPage("game");
+}
+
+/* SPEEDRUN MODE */
+function startSpeedrun() {
+  currentMode = "speed";
+  gameActive = true;
+  speedRound = 0;
+  timeLeft = 30;
+
+  document.getElementById("modeLabel").textContent = "⚡ SPEEDRUN";
+  document.getElementById("timerDisplay").style.display = "block";
+  document.getElementById("classicArea").style.display = "block";
+  document.getElementById("mazeArea").style.display = "none";
+  document.getElementById("normalInput").style.display = "block";
+
+  hideResult();
+  setInputState(true);
+  nextSpeedRound();
+  showPage("game");
+}
+
+function nextSpeedRound() {
+  speedRound++;
+  const puzzle = classicPuzzles[Math.floor(Math.random() * classicPuzzles.length)];
+
+  currentWord = puzzle[0];
+  targetWord = puzzle[1];
+  chain = [currentWord];
+
+  document.getElementById("startWord").textContent = currentWord;
+  document.getElementById("targetWord").textContent = targetWord;
+  document.getElementById("scoreDisplay").textContent = `Rounds: ${speedRound - 1}`;
+
+  setInputState(true);
+  updateChain();
+  updateTimer();
+  stopTimer();
+
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      stopTimer();
+      gameActive = false;
+      setInputState(false);
+      saveScore("speed", speedRound - 1);
+      showResult("💥 TIME'S UP!", `You completed ${speedRound - 1} rounds!`);
+    }
+  }, 1000);
+}
+
+/* CONNECT INPUT HANDLING */
+function connectWord() {
+  if (!gameActive || currentMode === "maze") return;
+
+  const input = document.getElementById("wordInput");
+  const val = input.value.trim();
+  const word = cleanWord(val);
+
+  if (!word) return;
+  const displayWord = val.toUpperCase();
+
+  if (areConnected(currentWord, word)) {
+    chain.push(displayWord);
+    currentWord = displayWord;
+    updateChain();
+    input.value = "";
+    showFeedback("CONNECTED! ✨", true);
+
+    if (currentMode === "classic") {
+      document.getElementById("scoreDisplay").textContent = `Words: ${chain.length}`;
+      if (cleanWord(currentWord) === cleanWord(targetWord)) {
+        gameActive = false;
+        setInputState(false); // Lock inputs immediately
+        saveScore("classic", chain.length - 1);
+        showResult("🎉 BAGEL ACHIEVED!", `Reached target in ${chain.length - 1} steps!`);
+      }
+    } else if (currentMode === "speed") {
+      if (cleanWord(currentWord) === cleanWord(targetWord)) {
+        timeLeft += 4; // Bonus time
+        nextSpeedRound();
+      }
+    }
+  } else {
+    showFeedback(`"${displayWord}" doesn't connect to ${currentWord}!`, false);
+  }
+}
+
+function updateChain() {
+  const el = document.getElementById("chain");
+  el.innerHTML = "";
+  chain.forEach((w, i) => {
+    const span = document.createElement("span");
+    span.className = "chain-word" + (i === chain.length - 1 ? " current" : "");
+    span.textContent = w;
+    el.appendChild(span);
+    if (i < chain.length - 1) {
+      const arr = document.createElement("span");
+      arr.textContent = "→";
+      arr.style.padding = "0 4px";
+      el.appendChild(arr);
+    }
+  });
+}
+
+/* MAZE MODE */
+const mazeSets = [
+  ["CAT", "PET", "DOG", "BARK", "BONE", "MEOW", "FUR", "SOFT", "BED"]
+];
+
+function startMaze() {
+  currentMode = "maze";
+  gameActive = true;
+  mazeWords = [...mazeSets[0]];
+  mazeUsed = [];
+  mazeCurrent = null;
+
+  document.getElementById("modeLabel").textContent = "🌀 MAZE";
+  document.getElementById("scoreDisplay").textContent = "Visited: 0/9";
+  document.getElementById("timerDisplay").style.display = "none";
+
+  document.getElementById("classicArea").style.display = "none";
+  document.getElementById("mazeArea").style.display = "block";
+  document.getElementById("normalInput").style.display = "none";
+
+  hideResult();
+  drawMaze();
+  showPage("game");
+}
+
+function drawMaze() {
+  const board = document.getElementById("mazeBoard");
+  board.innerHTML = "";
+
+  mazeWords.forEach((word) => {
+    const btn = document.createElement("button");
+    btn.className = "maze-word";
+    if (mazeUsed.includes(word)) btn.classList.add("used");
+    if (mazeCurrent === word) btn.classList.add("current-head");
+
+    btn.textContent = word;
+    btn.onclick = () => selectMazeWord(word);
+    board.appendChild(btn);
+  });
+
+  const chainEl = document.getElementById("mazeChain");
+  chainEl.innerHTML = mazeUsed.map(w => `<span class="chain-word current">${w}</span>`).join(" → ");
+}
+
+function selectMazeWord(word) {
+  if (!gameActive || mazeUsed.includes(word)) return;
+
+  if (!mazeCurrent || areConnected(mazeCurrent, word)) {
+    mazeCurrent = word;
+    mazeUsed.push(word);
+    document.getElementById("scoreDisplay").textContent = `Visited: ${mazeUsed.length}/${mazeWords.length}`;
+    drawMaze();
+
+    if (mazeUsed.length === mazeWords.length) {
+      gameActive = false;
+      saveScore("maze", 1);
+      showResult("🌀 MAZE CLEARED!", "You visited every single word in the grid!");
+    }
+  } else {
+    showFeedback(`Cannot bridge ${mazeCurrent} to ${word}!`, false);
+  }
+}
+
+/* HELPERS & SCORES */
+function showFeedback(msg, good) {
+  const el = document.getElementById("feedback");
+  el.textContent = msg;
+  el.className = `feedback ${good ? "good" : "bad"}`;
+}
+
+function showResult(title, text) {
+  document.getElementById("resultTitle").textContent = title;
+  document.getElementById("resultText").textContent = text;
+  document.getElementById("result").style.display = "block";
+}
+
+function hideResult() {
+  document.getElementById("result").style.display = "none";
+}
+
+function restartCurrent() {
+  if (currentMode === "classic") startClassic();
+  if (currentMode === "speed") startSpeedrun();
+  if (currentMode === "maze") startMaze();
+}
+
+function updateTimer() {
+  document.getElementById("timerDisplay").textContent = `⏱ ${timeLeft}`;
+}
+
+function stopTimer() {
+  if (timer) clearInterval(timer);
+  timer = null;
+}
+
+function saveScore(mode, val) {
+  const key = "bagelScores_" + mode;
+  const scores = JSON.parse(localStorage.getItem(key) || "[]");
+  scores.push({ score: val, date: new Date().toLocaleDateString() });
+  localStorage.setItem(key, JSON.stringify(scores));
+}
+
+function showScores(mode) {
+  const list = document.getElementById("scoreList");
+  const scores = JSON.parse(localStorage.getItem("bagelScores_" + mode) || "[]");
+  list.innerHTML = scores.length ? "" : "<li>No scores recorded yet!</li>";
+
+  document.querySelectorAll(".score-tab").forEach((t, i) => {
+    t.classList.toggle("active", (mode==='classic' && i===0)||(mode==='speed' && i===1)||(mode==='maze' && i===2));
+  });
+
+  scores.forEach((entry, idx) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>#${idx+1} ${entry.date}</span><span>${entry.score} ${mode === 'classic' ? 'connections' : 'rounds'}</span>`;
+    list.appendChild(li);
+  });
+}
+
+// Init
+showPage("home");
+</script>
+</body>
+</html>
