@@ -136,11 +136,11 @@
 
             gridItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    const subdomain = item.getAttribute('data-subdomain');
+                    const pathSegment = item.getAttribute('data-path');
                     
-                    if (subdomain) {
-                        // Directs to: https://yourdomain.com
-                        const targetUrl = `${currentProtocol}//${subdomain}.${currentHost}`;
+                    if (pathSegment) {
+                        // Directs to path style: https://samoyed33.com
+                        const targetUrl = `${currentProtocol}//${currentHost}/${pathSegment}`;
                         window.location.href = targetUrl;
                     }
                 });
