@@ -2,1007 +2,1693 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Everything Is a Bagel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Everything Bagel 🥯</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  --cream: #fff8e8;
-  --cream2: #fff1cf;
-  --pink: #ff5fa2;
-  --hotpink: #ff3f8e;
-  --yellow: #ffd447;
-  --orange: #ff9f43;
-  --blue: #6c7cff;
-  --purple: #9b6cff;
-  --green: #54d68c;
-  --ink: #29233d;
-  --muted: #756d82;
+  --pastel-pink: #ffdce8;
+  --pink-accent: #ff65a3;
+  --pastel-blue: #e2eaff;
+  --blue-accent: #4a6bff;
+  --pastel-yellow: #fff3cb;
+  --yellow-accent: #f7ca38;
+  --bagel-brown: #d8a25e;
+  --ink: #1e192b;
+  --muted: #5e566d;
   --white: #ffffff;
-  --shadow: 0 8px 0 rgba(41,35,61,.12);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
   margin: 0;
   min-height: 100vh;
   font-family: "Baloo 2", sans-serif;
   color: var(--ink);
-  background: #fffdf5;
+  background: radial-gradient(circle at 50% 0%, #ffffff 0%, #fff0f6 60%, #eef3ff 100%);
   overflow-x: hidden;
   position: relative;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
 }
 
-/* -------------------- DYNAMIC COLOR-CHANGING BACKGROUND -------------------- */
-
-.bg-blobs {
+/* PHYSICS CANVAS BACKGROUND */
+#physicsCanvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -2;
-  overflow: hidden;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.6;
-  animation: floatMove 18s ease-in-out infinite alternate, colorShift 12s linear infinite alternate;
-}
-
-.blob.one {
-  width: 350px;
-  height: 350px;
-  top: -50px;
-  left: -50px;
-  background: var(--pink);
-}
-
-.blob.two {
-  width: 400px;
-  height: 400px;
-  bottom: -100px;
-  right: -50px;
-  background: var(--blue);
-  animation-delay: -5s, -3s;
-}
-
-.blob.three {
-  width: 300px;
-  height: 300px;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--yellow);
-  animation-delay: -10s, -7s;
-}
-
-@keyframes floatMove {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, -40px) scale(1.15); }
-  100% { transform: translate(-40px, 50px) scale(0.9); }
-}
-
-@keyframes colorShift {
-  0% { background: var(--pink); }
-  33% { background: var(--blue); }
-  66% { background: var(--yellow); }
-  100% { background: var(--green); }
-}
-
-/* -------------------- BAGELS -------------------- */
-
-.bagel {
-  position: fixed;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #d99345;
-  border: 13px solid #f5b95d;
-  box-shadow: inset 0 0 0 5px #c77d32, 0 8px 0 rgba(80,50,30,.12);
-  z-index: -1;
-  opacity: .75;
-}
-
-.bagel::after {
-  content: "";
-  position: absolute;
-  width: 23px;
-  height: 23px;
-  background: var(--cream);
-  border-radius: 50%;
-  left: 16px;
-  top: 16px;
-}
-
-.bagel.one { top: 9%; left: 3%; transform: rotate(-20deg); }
-.bagel.two { right: 4%; bottom: 12%; transform: rotate(25deg) scale(.8); }
-.bagel.three { top: 45%; right: 1%; transform: rotate(10deg) scale(.55); }
-
-/* -------------------- APP -------------------- */
-
+/* APP CONTAINER - FULLY FLUID & RESPONSIVE */
 .app {
-  width: min(1100px, 94%);
+  position: relative;
+  z-index: 1;
+  width: min(850px, 100%);
   margin: auto;
-  padding: 28px 0 60px;
+  padding: 15px 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-header { text-align: center; margin-bottom: 22px; }
+header { text-align: center; margin-bottom: 15px; }
 
 .logo {
   display: inline-block;
-  font-size: clamp(3rem, 8vw, 5.5rem);
-  line-height: .85;
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  line-height: .9;
   font-weight: 800;
-  color: var(--pink);
-  text-shadow: 4px 4px 0 var(--yellow), 7px 7px 0 var(--blue);
+  color: var(--pink-accent);
+  text-shadow: 3px 3px 0 var(--pastel-yellow), 5px 5px 0 var(--pastel-blue);
   transform: rotate(-2deg);
-  animation: logoBounce 2.5s ease-in-out infinite;
+  animation: logoBounce 3s ease-in-out infinite;
 }
 
 .subtitle {
-  margin-top: 15px;
-  font-size: 1.15rem;
+  margin-top: 8px;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
   font-weight: 700;
   color: var(--muted);
+  text-align: center;
+  padding: 0 10px;
 }
 
 @keyframes logoBounce {
   0%,100% { transform: rotate(-2deg) translateY(0); }
-  50% { transform: rotate(2deg) translateY(-5px); }
+  50% { transform: rotate(2deg) translateY(-4px); }
 }
 
-/* -------------------- NAV -------------------- */
-
+/* NAVIGATION BAR */
 nav {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
-  margin: 22px auto 30px;
 }
 
+.nav-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-weight: 800;
+  box-shadow: 0 3px 0 #cad9ff;
+  border: 2px solid var(--pastel-blue);
+}
+
+.nav-btn:hover, .nav-btn:active {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 #cad9ff;
+}
+
+.nav-btn.active {
+  background: var(--pink-accent);
+  color: white;
+  border-color: var(--pink-accent);
+  box-shadow: none;
+}
+
+/* BUTTONS */
 button {
   border: 0;
   font-family: inherit;
   font-weight: 800;
   cursor: pointer;
-  transition: transform .15s, box-shadow .15s;
+  transition: transform .15s, background-color .15s;
 }
 
-.nav-btn {
-  padding: 10px 20px;
+.btn-main {
+  padding: 14px 30px;
   border-radius: 999px;
-  background: white;
-  color: var(--ink);
-  box-shadow: 0 5px 0 #ddd4c6;
-  font-size: 1rem;
-}
-
-.nav-btn:hover {
-  transform: translateY(-3px) rotate(-1deg);
-  box-shadow: 0 8px 0 #ddd4c6;
-}
-
-.nav-btn.active {
-  background: var(--pink);
+  background: var(--pink-accent);
   color: white;
-  box-shadow: 0 5px 0 #d93476;
+  font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+  box-shadow: none;
+  display: inline-block;
+  margin-top: 15px;
 }
 
-/* -------------------- PAGES -------------------- */
+.btn-main:hover, .btn-main:active {
+  transform: translateY(-2px);
+  background: #f05292;
+}
 
+/* PAGES */
 .page { display: none; }
 .page.active { display: block; }
 
-/* -------------------- HOME -------------------- */
-
+/* HERO & INFO CARDS */
 .hero-card {
-  background: rgba(255,255,255,.9);
-  backdrop-filter: blur(10px);
-  border-radius: 35px;
-  padding: 35px;
-  box-shadow: 0 12px 0 rgba(255,95,162,.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 28px;
+  padding: clamp(25px, 5vw, 40px) clamp(15px, 4vw, 30px);
+  box-shadow: 0 10px 20px rgba(45, 38, 64, 0.05);
   text-align: center;
   border: 4px solid white;
 }
 
-.hero-card h1 { margin: 0; font-size: 2.3rem; }
-.hero-card p { font-family: "Space Mono", monospace; color: var(--muted); }
+.hero-card h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.3rem); color: var(--ink); text-align: center; }
+.hero-card p { font-family: "Baloo 2", sans-serif; color: var(--muted); margin-top: 8px; font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 700; text-align: center; }
 
-.mode-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 28px;
+/* RULES LIST */
+.rules-list {
+  text-align: center;
+  max-width: 680px;
+  margin: 20px auto;
+  line-height: 1.5;
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+  padding: 0;
 }
 
-.mode-card {
-  padding: 27px 20px;
-  border-radius: 28px;
-  color: white;
-  min-height: 190px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: transform .18s;
+.rules-list li {
+  margin-bottom: 12px;
+  background: #f4f7ff;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-left: 5px solid var(--blue-accent);
+  list-style-type: none;
+  color: #1e192b;
+  font-weight: 700;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.02);
+  text-align: center;
 }
 
-.mode-card:hover { transform: translateY(-7px) rotate(-1deg); }
-.mode-card.classic { background: linear-gradient(145deg, #ff65a8, #ff3f8e); }
-.mode-card.speed { background: linear-gradient(145deg, #ffb347, #ff7a45); }
-.mode-card.maze { background: linear-gradient(145deg, #8c7cff, #655cff); }
-.mode-icon { font-size: 3.2rem; }
-.mode-card h2 { margin: 0; font-size: 1.8rem; }
-.mode-card p { margin: 0; font-weight: 700; }
+.rules-list strong {
+  color: var(--blue-accent);
+  font-size: 1.1rem;
+  display: inline-block;
+  margin-right: 4px;
+}
 
-/* -------------------- GAME -------------------- */
+.rules-list code {
+  background: var(--pastel-yellow);
+  color: #523e00;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-family: "Space Mono", monospace;
+  font-size: 0.9rem;
+}
 
+/* GAME CARD */
 .game-card {
-  background: rgba(255,255,255,.93);
+  position: relative;
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
-  border-radius: 35px;
-  padding: 30px;
-  box-shadow: 0 12px 0 rgba(41,35,61,.1);
+  border-radius: 28px;
+  padding: clamp(15px, 4vw, 30px);
+  box-shadow: 0 10px 20px rgba(45, 38, 64, 0.05);
   border: 4px solid white;
+  overflow: hidden;
+  text-align: center;
 }
 
 .game-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
-.mode-label { font-size: 1.5rem; font-weight: 800; }
-.stats { display: flex; gap: 10px; flex-wrap: wrap; }
-.stat {
-  padding: 8px 15px;
-  background: var(--cream2);
+.stats {
+  padding: 6px 14px;
+  background: var(--pastel-yellow);
   border-radius: 999px;
   font-family: "Space Mono", monospace;
   font-weight: 700;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+}
+
+.player-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.player-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 6px;
+  background: var(--pastel-blue);
+  color: var(--blue-accent);
+  border-radius: 999px;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+}
+
+.profile-avatar-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+.icon-btn {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #f0f4ff;
+  color: var(--blue-accent);
+  font-size: 0.85rem;
+  border: 1px solid var(--pastel-blue);
+}
+
+.icon-btn:hover {
+  background: var(--pastel-blue);
+}
+
+.change-user-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--pastel-pink);
+  color: var(--pink-accent);
+  font-size: clamp(0.75rem, 2.2vw, 0.85rem);
+  font-weight: 800;
+  box-shadow: none;
 }
 
 .word-stage {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 18px;
-  margin: 30px 0;
+  gap: clamp(10px, 3vw, 20px);
+  margin: 20px 0;
   flex-wrap: wrap;
 }
 
 .word-node {
-  min-width: 140px;
-  padding: 16px 22px;
-  border-radius: 25px;
+  min-width: clamp(110px, 30vw, 140px);
+  padding: 12px 18px;
+  border-radius: 20px;
   text-align: center;
-  font-size: 1.8rem;
+  font-size: clamp(1.4rem, 4.5vw, 1.8rem);
   font-weight: 800;
   background: white;
-  border: 5px solid var(--yellow);
-  box-shadow: 0 8px 0 #e4b92f;
-  animation: nodePop .35s ease;
+  border: 4px solid var(--yellow-accent);
+  box-shadow: 0 6px 0 #e6b92a;
+  position: relative;
+}
+
+.word-node::after {
+  content: "🤩";
+  font-size: 1rem;
+  position: absolute;
+  top: -12px;
+  right: -8px;
 }
 
 .word-node.target {
-  border-color: var(--blue);
-  box-shadow: 0 8px 0 #514dc5;
+  border-color: var(--blue-accent);
+  box-shadow: 0 6px 0 #5773ef;
 }
 
-.arrow { font-size: 2rem; color: var(--pink); font-weight: 800; }
+.arrow { font-size: clamp(1.5rem, 4vw, 2rem); color: var(--pink-accent); font-weight: 800; }
 
 .chain {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  min-height: 55px;
-  margin: 15px 0 25px;
+  min-height: 45px;
+  margin: 10px 0 20px;
 }
 
 .chain-word {
-  background: #f0edff;
-  color: #5749b7;
-  border-radius: 15px;
-  padding: 8px 14px;
+  background: var(--pastel-blue);
+  color: var(--blue-accent);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: clamp(0.9rem, 2.8vw, 1rem);
   font-weight: 800;
   animation: pop .25s ease;
 }
 
-.chain-word.current { background: var(--pink); color: white; }
+.chain-word.current { background: var(--pink-accent); color: white; }
 
 @keyframes pop {
   from { transform: scale(.7); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
-.input-area {
-  display: flex;
+/* CHOICES */
+.choice-heading {
+  text-align: center;
+  font-weight: 800;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: clamp(0.95rem, 2.8vw, 1.05rem);
+}
+
+.choice-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  max-width: 700px;
+  max-width: 750px;
   margin: auto;
 }
 
-input {
-  flex: 1;
-  min-width: 0;
-  padding: 16px 20px;
-  border-radius: 20px;
-  border: 4px solid #ddd6ff;
-  outline: none;
-  font-family: "Baloo 2", sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
+.choice-btn {
+  padding: clamp(16px, 4vw, 22px) 8px;
+  border-radius: 18px;
+  background: white;
+  border: 3px solid var(--pastel-blue);
   color: var(--ink);
-  background: #fff;
+  font-size: clamp(1.05rem, 3.5vw, 1.25rem);
+  font-weight: 800;
+  box-shadow: 0 5px 0 #cad9ff;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+  text-transform: uppercase;
+  text-align: center;
+  word-break: break-word;
 }
 
-input:focus { border-color: var(--pink); }
-input:disabled { background: #eee; cursor: not-allowed; }
-
-.connect-btn {
-  padding: 15px 25px;
-  border-radius: 20px;
-  background: var(--pink);
-  color: white;
-  font-size: 1.1rem;
-  box-shadow: 0 6px 0 #d93476;
-}
-
-.connect-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 9px 0 #d93476;
-}
-
-.connect-btn:disabled {
-  background: #ccc;
-  box-shadow: 0 6px 0 #aaa;
-  cursor: not-allowed;
+.choice-btn:hover, .choice-btn:active {
+  transform: translateY(-2px);
+  border-color: var(--blue-accent);
+  box-shadow: 0 7px 0 #5773ef;
 }
 
 .feedback {
-  min-height: 35px;
+  min-height: 30px;
   text-align: center;
   margin-top: 15px;
-  font-size: 1.15rem;
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
   font-weight: 800;
+  color: var(--muted);
 }
-.feedback.good { color: #1ba45b; }
-.feedback.bad { color: #e45b73; }
 
-/* -------------------- MAZE -------------------- */
+/* BOARD BLUR */
+.board-content {
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
 
-.maze-intro { text-align: center; margin-bottom: 20px; }
-.maze-board {
-  position: relative;
-  min-height: 480px;
-  border-radius: 35px;
-  padding: 20px;
-  background: radial-gradient(circle, rgba(108,124,255,.13) 1px, transparent 1px);
-  background-size: 25px 25px;
-  border: 4px dashed #c5bcff;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 15px;
+.board-content.blurred {
+  filter: blur(6px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* POPUP RESULTS OVERLAY */
+.result-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  justify-content: center;
   align-items: center;
-  justify-items: center;
+  z-index: 10;
+  padding: 15px;
 }
 
-.maze-word {
-  padding: 14px 18px;
+.result-card {
+  position: relative;
+  text-align: center;
+  padding: clamp(20px, 4vw, 30px) clamp(15px, 3vw, 25px);
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 25px;
+  box-shadow: 0 12px 25px rgba(45, 38, 64, 0.2);
+  border: 4px solid var(--pink-accent);
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.result-card h2 { font-size: clamp(1.8rem, 5vw, 2.3rem); color: var(--pink-accent); margin: 0; text-align: center; }
+.result-card p { font-size: clamp(1rem, 3vw, 1.1rem); color: var(--muted); margin: 6px 0 14px; text-align: center; }
+
+.result-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-popup {
+  padding: 10px 18px;
+  border-radius: 16px;
+  background: var(--blue-accent);
+  color: white;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  box-shadow: 0 4px 0 #5773ef;
+}
+
+.btn-popup.pink-popup {
+  background: var(--pink-accent);
+  box-shadow: none;
+}
+
+.btn-popup:hover, .btn-popup:active {
+  transform: translateY(-2px);
+}
+
+/* MODALS & CLOSE BUTTONS */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(45, 38, 64, 0.4);
+  backdrop-filter: blur(6px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding: 10px;
+}
+
+.modal-card {
+  position: relative;
   background: white;
-  border: 4px solid var(--yellow);
-  border-radius: 20px;
+  padding: clamp(25px, 5vw, 35px) clamp(15px, 4vw, 25px);
+  border-radius: 25px;
+  text-align: center;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  border: 4px solid var(--pastel-yellow);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.close-x-btn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f0f4ff;
+  color: var(--blue-accent);
   font-size: 1.1rem;
   font-weight: 800;
-  box-shadow: 0 6px 0 #e2b92f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--pastel-blue);
   cursor: pointer;
-  transition: .2s;
-  z-index: 2;
-  width: 90%;
-  max-width: 160px;
-  text-align: center;
+  transition: transform .15s, background-color .15s;
 }
 
-.maze-word:hover { transform: scale(1.05) rotate(-2deg); }
-.maze-word.used {
-  background: var(--pink);
-  color: white;
-  border-color: #ff9fc7;
-  box-shadow: 0 6px 0 #d93476;
-}
-.maze-word.current-head {
-  border-color: var(--blue);
-  box-shadow: 0 6px 0 #514dc5;
-  animation: pulse 1s infinite;
+.close-x-btn:hover {
+  background: var(--pastel-pink);
+  color: var(--pink-accent);
+  transform: scale(1.08);
 }
 
-@keyframes pulse { 50% { transform: scale(1.08); } }
+.modal-card h2 { margin: 0 0 6px; color: var(--pink-accent); font-size: clamp(1.6rem, 4.5vw, 2rem); text-align: center; }
+.modal-card p { color: var(--muted); margin-bottom: 15px; font-weight: 700; font-size: clamp(0.95rem, 2.8vw, 1.05rem); text-align: center; }
 
-/* -------------------- RESULTS & INFO -------------------- */
+.new-user-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--pastel-pink);
+  color: var(--pink-accent);
+  font-size: clamp(0.95rem, 3vw, 1.05rem);
+  font-weight: 800;
+  margin-bottom: 15px;
+  border: 2px dashed var(--pink-accent);
+}
 
-.result {
-  text-align: center;
-  padding: 30px;
-  background: white;
-  border-radius: 30px;
-  margin-top: 25px;
+.new-user-btn:hover {
+  background: #fce1ec;
+}
+
+.input-box-wrapper {
   display: none;
-}
-.result h2 { font-size: 2.8rem; color: var(--pink); margin: 0; }
-.result button {
-  margin: 10px 5px 0;
-  padding: 12px 22px;
-  border-radius: 18px;
-  background: var(--blue);
-  color: white;
-  font-size: 1rem;
-}
-
-.info-card {
-  max-width: 800px;
-  margin: auto;
-  background: white;
-  padding: 35px;
-  border-radius: 35px;
-  box-shadow: var(--shadow);
-}
-.info-card h1 { color: var(--pink); font-size: 2.8rem; margin-top: 0; }
-.info-card h2 { color: var(--purple); }
-
-.score-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-.score-tab { padding: 10px 20px; border-radius: 999px; background: var(--cream2); }
-.score-tab.active { background: var(--pink); color: white; }
-.score-list { list-style: none; padding: 0; }
-.score-list li {
+  margin-bottom: 15px;
   background: #faf8ff;
   padding: 15px;
-  margin: 8px 0;
   border-radius: 16px;
+  border: 2px solid var(--pastel-blue);
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 3px solid var(--pastel-blue);
+  font-family: inherit;
+  font-size: clamp(1rem, 3vw, 1.15rem);
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.modal-input:focus { border-color: var(--pink-accent); }
+
+.player-list {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.player-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 14px;
+  background: var(--pastel-blue);
+  color: var(--blue-accent);
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  font-weight: 800;
+  text-align: center;
+  border: 2px solid transparent;
+}
+
+.player-item-btn:hover {
+  background: var(--blue-accent);
+  color: white;
+}
+
+/* FLAVOR GRID */
+.flavor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.flavor-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 3px solid var(--pastel-blue);
+  color: var(--ink);
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  font-weight: 800;
+  transition: transform .15s, border-color .15s, background-color .15s;
+}
+
+.flavor-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--pink-accent);
+  background: var(--pastel-pink);
+}
+
+.flavor-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  border: 2px solid white;
+  background: #ffffff;
+}
+
+/* LEADERBOARD TABLE */
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  text-align: center;
+}
+
+.leaderboard-table th {
+  background: var(--pastel-blue);
+  color: var(--blue-accent);
+  padding: 8px;
+  border-radius: 8px;
+  font-family: "Space Mono", monospace;
+  text-align: center;
+}
+
+.leaderboard-table td {
+  padding: 8px 6px;
+  border-bottom: 1px dashed #e2eaff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.leaderboard-table tr.highlight {
+  background: var(--pastel-pink);
+  color: var(--pink-accent);
   font-weight: 800;
 }
 
-@media (max-width: 750px) {
-  .mode-grid { grid-template-columns: 1fr; }
-  .maze-board { grid-template-columns: repeat(2, 1fr); }
-  .input-area { flex-direction: column; }
+.rank-badge {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 50%;
+  background: var(--pastel-yellow);
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+
+.empty-state {
+  padding: 15px;
+  font-family: "Space Mono", monospace;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .choice-container { grid-template-columns: 1fr; }
+  .flavor-grid { grid-template-columns: 1fr; }
+  .word-stage { gap: 8px; }
+  .arrow { font-size: 1.2rem; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- DYNAMIC MOVING BACKGROUND BLOBS -->
-<div class="bg-blobs">
-  <div class="blob one"></div>
-  <div class="blob two"></div>
-  <div class="blob three"></div>
-</div>
-
-<div class="bagel one"></div>
-<div class="bagel two"></div>
-<div class="bagel three"></div>
+<!-- DYNAMIC BOUNCING PHYSICS CANVAS -->
+<canvas id="physicsCanvas"></canvas>
 
 <div class="app">
 
-<header>
-  <div class="logo">EVERYTHING<br>IS A BAGEL</div>
-  <div class="subtitle">A very serious word game about connecting very unserious things.</div>
+<header id="mainHeader">
+  <div class="logo">EVERYTHING BAGEL 🥯</div>
+  <div class="subtitle">Connect the words to find your target destination!</div>
 </header>
 
 <nav>
-  <button class="nav-btn active" onclick="showPage('home')">🏠 HOME</button>
-  <button class="nav-btn" onclick="showPage('how')">❓ HOW TO PLAY</button>
-  <button class="nav-btn" onclick="showPage('scores')">🏆 HIGH SCORES</button>
+  <button class="nav-btn" id="navHome" onclick="handleNavClick('home')">🏠 HOME</button>
+  <button class="nav-btn" id="navHow" onclick="handleNavClick('howView')">❓ HOW TO PLAY</button>
+  <button class="nav-btn" id="navLeaderboard" onclick="handleNavClick('leaderboardView')">🏆 LEADERBOARD</button>
 </nav>
 
 <!-- HOME PAGE -->
 <section id="home" class="page active">
   <div class="hero-card">
-    <h1>How fast can your brain make a bagel?</h1>
-    <p>Connect words. Think sideways. Make weird connections.</p>
-
-    <div class="mode-grid">
-      <div class="mode-card classic" onclick="startClassic()">
-        <div class="mode-icon">🧠</div>
-        <div>
-          <h2>CLASSIC</h2>
-          <p>Find the shortest path.</p>
-        </div>
-      </div>
-
-      <div class="mode-card speed" onclick="startSpeedrun()">
-        <div class="mode-icon">⚡</div>
-        <div>
-          <h2>SPEEDRUN</h2>
-          <p>Think fast. Get faster.</p>
-        </div>
-      </div>
-
-      <div class="mode-card maze" onclick="startMaze()">
-        <div class="mode-icon">🌀</div>
-        <div>
-          <h2>MAZE</h2>
-          <p>Connect every word.</p>
-        </div>
-      </div>
-    </div>
+    <h1>Ready for a fresh batch? 🤩</h1>
+    <p>Find your way from word to word to reach the target!</p>
+    <button class="btn-main" onclick="openPlayerModal()">START GAME ✨</button>
   </div>
 </section>
 
-<!-- GAME PLAY PAGE -->
+<!-- HOW TO PLAY PAGE -->
+<section id="howView" class="page">
+  <div class="hero-card">
+    <h1>How to Play</h1>
+    <p>Follow these quick steps to navigate the word maze!</p>
+
+    <ul class="rules-list">
+      <li><strong>1. Goal:</strong> Connect your start word (e.g., <code>CAT</code>) to the target word (e.g., <code>BAGEL</code>) in as few tries as possible.</li>
+      <li><strong>2. Pick Your Path:</strong> Each turn gives you 3 words. One option leads closer, while others branch into detours or dead ends.</li>
+      <li><strong>3. Follow the Logic:</strong> Words link by natural associations! (e.g., <code>CAT</code> → <code>FISH</code> → <code>OCEAN</code> → <code>SALT</code> → <code>FLOUR</code> → <code>BAKERY</code> → <code>BAGEL</code>).</li>
+      <li><strong>4. Keep Exploring:</strong> Hit a dead end? Don't worry—just keep picking new words until you steer yourself back on track!</li>
+      <li><strong>5. Rank Up:</strong> Solve the puzzle in fewer steps to climb to the top of the leaderboard.</li>
+    </ul>
+
+    <button class="btn-main" onclick="openPlayerModal()">START GAME ✨</button>
+  </div>
+</section>
+
+<!-- LEADERBOARD VIEW -->
+<section id="leaderboardView" class="page">
+  <div class="hero-card">
+    <h1>Hall of Everything Bagels 🏆</h1>
+    <p>Rankings are based on the fewest tries/steps to reach the target!</p>
+    <div id="standaloneLeaderboard"></div>
+    <button class="btn-main" style="background:var(--blue-accent);" onclick="showPage('home')">BACK TO HOME</button>
+  </div>
+</section>
+
+<!-- GAME PAGE -->
 <section id="game" class="page">
   <div class="game-card">
-    <div class="game-top">
-      <div class="mode-label" id="modeLabel">CLASSIC</div>
-      <div class="stats">
-        <div class="stat" id="scoreDisplay">Score: 0</div>
-        <div class="stat" id="timerDisplay">⏱ 30</div>
+    
+    <!-- BLURRABLE BOARD WRAPPER -->
+    <div class="board-content" id="boardContent">
+      <div class="game-top">
+        <div class="player-badge-container">
+          <div class="player-badge" id="playerDisplay">
+            <img class="profile-avatar-img" id="badgeAvatar" src="" alt="Bagel Avatar">
+            <span id="badgeName">Player: Guest</span>
+          </div>
+          <button class="icon-btn" onclick="openEditMenuModal()" title="Edit profile or bagel">✏️</button>
+          <button class="change-user-btn" onclick="openPlayerModal()">👤 Switch</button>
+        </div>
+        <div class="stats" id="stepCounter">Steps: 0</div>
       </div>
-    </div>
 
-    <div id="classicArea">
       <div class="word-stage">
         <div class="word-node" id="startWord">CAT</div>
         <div class="arrow">→</div>
-        <div class="word-node target" id="targetWord">WINTER</div>
+        <div class="word-node target" id="targetWord">BAGEL</div>
       </div>
-    </div>
 
-    <div id="mazeArea" style="display:none;">
-      <div class="maze-intro">
-        <h2>🌀 FIND YOUR WAY THROUGH THE MAZE!</h2>
-        <p>Click a word to start, then click connected adjacent words.</p>
-      </div>
-      <div class="maze-board" id="mazeBoard"></div>
-      <div class="chain" id="mazeChain" style="margin-top:20px;"></div>
-    </div>
-
-    <div id="normalInput">
       <div class="chain" id="chain"></div>
-      <div class="input-area">
-        <input
-          id="wordInput"
-          type="text"
-          placeholder="Type a related word..."
-          autocomplete="off"
-          onkeydown="if(event.key==='Enter') connectWord()"
-        >
-        <button id="connectBtn" class="connect-btn" onclick="connectWord()">CONNECT! ✨</button>
+
+      <div class="choice-heading">CHOOSE YOUR NEXT WORD:</div>
+      <div class="choice-container" id="choicesContainer">
+        <!-- 3 Choice Buttons injected here -->
       </div>
+
       <div class="feedback" id="feedback"></div>
     </div>
 
-    <div class="result" id="result">
-      <h2 id="resultTitle">YOU DID IT!</h2>
-      <p id="resultText"></p>
-      <button onclick="restartCurrent()">PLAY AGAIN</button>
-      <button onclick="showPage('home')">HOME</button>
-    </div>
-  </div>
-</section>
+    <!-- POPUP OVERLAY ON WIN -->
+    <div class="result-overlay" id="resultOverlay">
+      <div class="result-card">
+        <h2>GOAL ACHIEVED! 🤩</h2>
+        <p id="resultText"></p>
+        
+        <div id="endGameLeaderboard"></div>
 
-<!-- HOW TO PLAY -->
-<section id="how" class="page">
-  <div class="info-card">
-    <h1>HOW TO PLAY 🥯</h1>
-    <h2>CLASSIC 🧠</h2>
-    <p>Connect the start word to the target word in as few steps as possible.</p>
-    <h2>SPEEDRUN ⚡</h2>
-    <p>Solve as many word targets as you can before the timer runs out. Each cleared target rewards bonus seconds!</p>
-    <h2>MAZE 🌀</h2>
-    <p>Click through the word grid to form one unbroken chain visiting every single word node.</p>
-  </div>
-</section>
-
-<!-- SCORES PAGE -->
-<section id="scores" class="page">
-  <div class="info-card">
-    <h1>HIGH SCORES 🏆</h1>
-    <div class="score-tabs">
-      <button class="score-tab active" onclick="showScores('classic')">CLASSIC</button>
-      <button class="score-tab" onclick="showScores('speed')">SPEEDRUN</button>
-      <button class="score-tab" onclick="showScores('maze')">MAZE</button>
+        <div class="result-buttons">
+          <button class="btn-popup" onclick="startNewPuzzle()">NEXT PUZZLE</button>
+          <button class="btn-popup pink-popup" onclick="showPage('home')">HOME</button>
+        </div>
+      </div>
     </div>
-    <ul class="score-list" id="scoreList"></ul>
+
   </div>
 </section>
 
 </div>
 
+<!-- MODALS -->
+<div class="modal-overlay" id="nameModal">
+  <div class="modal-card">
+    <button class="close-x-btn" onclick="closeModal()" title="Close">×</button>
+    
+    <!-- STEP 1: NAME SELECTOR -->
+    <div id="stepNameView" style="display:none;">
+      <h2>Choose Your Player 🤩</h2>
+      <p>Select who is playing today or create a new profile!</p>
+
+      <button class="new-user-btn" onclick="toggleNewUserInput(true)">➕ NEW USER?</button>
+
+      <div class="input-box-wrapper" id="newUserBox">
+        <input type="text" id="playerNameInput" class="modal-input" placeholder="e.g. Bagel Boss" maxlength="15" autocomplete="off" onkeydown="if(event.key==='Enter') goToFlavorStepFromNew()">
+        <button class="btn-main" style="margin-top:0; padding: 10px 24px; font-size:1.05rem;" onclick="goToFlavorStepFromNew()">NEXT →</button>
+      </div>
+
+      <div class="player-list" id="playerSelectList"></div>
+    </div>
+
+    <!-- STEP 2: BAGEL FLAVOR AVATAR SELECTOR -->
+    <div id="stepFlavorView" style="display:none;">
+      <h2>Choose Your Bagel Avatar 🥯</h2>
+      <p id="flavorSubtitle">Select your favorite bagel flavor!</p>
+
+      <div class="flavor-grid" id="flavorGrid"></div>
+    </div>
+
+    <!-- EDIT MENU (OPENED VIA PENCIL ICON) -->
+    <div id="stepEditMenuView" style="display:none;">
+      <h2>Edit Profile ✏️</h2>
+      <p>What would you like to update?</p>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <button class="btn-main" style="margin-top:0; width:100%; font-size:1.1rem;" onclick="openRenameModalFromEdit()">✏️ Rename Player</button>
+        <button class="btn-main" style="margin-top:0; width:100%; background:var(--blue-accent); font-size:1.1rem;" onclick="openFlavorModalFromEdit()">🥯 Change Bagel Avatar</button>
+        <button class="btn-main" style="margin-top:0; width:100%; background:var(--yellow-accent); color:var(--ink); font-size:1.1rem;" onclick="openGlobalLeaderboardModal()">🏆 View Leaderboard</button>
+      </div>
+    </div>
+
+    <!-- RENAME STEP -->
+    <div id="stepRenameView" style="display:none;">
+      <h2>Rename Yourself ✏️</h2>
+      <p>Enter your new player name below:</p>
+      <input type="text" id="renameInput" class="modal-input" placeholder="e.g. Bagel Boss" maxlength="15" autocomplete="off" onkeydown="if(event.key==='Enter') saveNewName()">
+      <button class="btn-main" style="margin-top:0; padding: 10px 24px; font-size:1.05rem;" onclick="saveNewName()">SAVE RENAME ✨</button>
+    </div>
+
+    <!-- LEADERBOARD MODAL VIEW -->
+    <div id="stepLeaderboardModalView" style="display:none;">
+      <h2>Leaderboard 🏆</h2>
+      <p>Top scores across all players:</p>
+      <div id="modalLeaderboardContainer"></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 /* =========================================================
-   WORD ASSOCIATIONS & DICTIONARY GRAPH
+   BAGEL AVATAR IMAGE GENERATOR (VECTOR DATA URIS)
    ========================================================= */
 
-const graph = {
-  // Animals & Pets (Bidirectional by logic)
-  cat: ["eye", "fur", "dog", "pet", "animal", "meow", "paw", "tail", "kitten", "mouse", "whiskers", "milk"],
-  dog: ["cat", "pet", "animal", "fur", "paw", "tail", "puppy", "bark", "bone", "leash", "walk"],
-  pet: ["cat", "dog", "animal", "home", "bird", "fish", "rabbit", "care", "cage", "feed"],
-  animal: ["cat", "dog", "pet", "nature", "fur", "zoo", "wild", "forest", "bear", "lion", "tiger"],
-  mouse: ["cat", "cheese", "small", "rat", "trap", "hole", "squeak"],
-  fish: ["water", "ocean", "sea", "swim", "pet", "gill", "sushi", "aquarium", "river"],
-
-  // Food & Breakfast
-  bagel: ["bread", "breakfast", "cream", "cheese", "food", "coffee", "doughnut", "toast", "bakery", "hole", "everything"],
-  bread: ["bagel", "food", "toast", "sandwich", "bakery", "butter", "wheat", "flour"],
-  coffee: ["breakfast", "bagel", "cream", "hot", "drink", "cup", "morning", "caffeine", "tea", "mug"],
-  cheese: ["food", "pizza", "bagel", "cream", "mouse", "yellow", "milk", "slice"],
-  cream: ["ice", "sweet", "dessert", "cake", "food", "coffee", "bagel", "whipped"],
-  pizza: ["cheese", "food", "sauce", "italian", "slice", "crust", "dinner", "pepperoni"],
-  cake: ["dessert", "sweet", "cream", "birthday", "food", "chocolate", "bake", "candle"],
-  breakfast: ["bagel", "coffee", "morning", "egg", "pancake", "bacon", "food", "toast"],
-
-  // Nature & Weather
-  sun: ["hot", "summer", "sky", "light", "beach", "bright", "yellow", "star", "day", "warmth"],
-  hot: ["sun", "summer", "fire", "cold", "heat", "spicy", "beach", "coffee", "warm"],
-  cold: ["blue", "ice", "winter", "snow", "water", "coat", "freeze", "chilly", "shiver"],
-  winter: ["cold", "snow", "ice", "coat", "white", "ski", "holiday", "season", "december"],
-  snow: ["ice", "cold", "winter", "white", "snowman", "ski", "flake", "storm"],
-  ice: ["cold", "snow", "cream", "winter", "water", "skate", "cube", "glacier"],
-  rain: ["water", "cloud", "storm", "weather", "umbrella", "wet", "puddle", "drop"],
-  cloud: ["sky", "rain", "white", "soft", "storm", "weather", "fluffy", "puff"],
-  sky: ["blue", "cloud", "sun", "space", "star", "rain", "bird", "plane", "night"],
-  ocean: ["blue", "water", "sea", "summer", "beach", "fish", "wave", "salt", "deep"],
-  beach: ["ocean", "summer", "sand", "sun", "vacation", "water", "swim", "towel", "shell"],
-
-  // Colors & Qualities
-  blue: ["eye", "sky", "ocean", "cold", "color", "water", "sad", "navy"],
-  white: ["snow", "cloud", "color", "milk", "paper", "clean", "bright"],
-  yellow: ["sun", "color", "bright", "flower", "cheese", "lemon", "banana"],
-  pink: ["color", "flower", "love", "cake", "candy", "rose", "pig"],
-  bright: ["light", "sun", "yellow", "color", "star", "day", "shiny"],
-  soft: ["fur", "cloud", "pillow", "blanket", "cat", "bed", "smooth"],
-
-  // Bed & Night
-  sleep: ["bed", "night", "dream", "tired", "pillow", "blanket", "rest", "snooze"],
-  night: ["dark", "moon", "sleep", "sky", "star", "black", "late", "shadow"],
-  moon: ["night", "sky", "space", "star", "crater", "orbit", "silver"],
-  space: ["sky", "moon", "star", "planet", "earth", "rocket", "alien", "galaxy"],
-  star: ["space", "sky", "night", "bright", "shine", "famous", "wish"]
+const BAGEL_AVATARS = {
+  "Everything": createBagelSVG('#d8a25e', '#a67232', 'everything'),
+  "Blueberry": createBagelSVG('#bf9b7a', '#2c3266', 'blueberry'),
+  "Asiago Cheese": createBagelSVG('#e8b968', '#b86118', 'asiago'),
+  "Plain": createBagelSVG('#e0ad6c', '#b37d3b', 'plain'),
+  "Cinnamon Raisin": createBagelSVG('#a87548', '#382014', 'raisin'),
+  "Sesame": createBagelSVG('#dca362', '#fff0c7', 'sesame')
 };
 
-/* SYMMETRIC & FLEXIBLE CONNECTION CHECK */
-function cleanWord(w) {
-  return (w || "").toLowerCase().trim().replace(/[^a-z0-9]/g, "");
-}
-
-function areConnected(w1, w2) {
-  const a = cleanWord(w1);
-  const b = cleanWord(w2);
-
-  if (!a || !b || a === b) return false;
-
-  // Strict Symmetric Check: (A -> B OR B -> A)
-  if (graph[a] && graph[a].includes(b)) return true;
-  if (graph[b] && graph[b].includes(a)) return true;
-
-  // Partial Root/Substring Matching (e.g., snow -> snowman)
-  if (a.length > 3 && b.length > 3) {
-    if (a.includes(b) || b.includes(a)) return true;
+function createBagelSVG(baseColor, detailColor, type) {
+  let details = '';
+  if (type === 'everything') {
+    details = `
+      <circle cx="35" cy="22" r="1.5" fill="#1e192b"/><circle cx="65" cy="25" r="1.5" fill="#fff"/>
+      <circle cx="25" cy="45" r="1.5" fill="#1e192b"/><circle cx="75" cy="48" r="1.5" fill="#fff"/>
+      <circle cx="40" cy="78" r="1.5" fill="#fff"/><circle cx="60" cy="76" r="1.5" fill="#1e192b"/>
+      <rect x="48" y="20" width="2" height="4" fill="#66441b" transform="rotate(20 48 20)"/>
+      <rect x="30" y="65" width="2" height="4" fill="#66441b" transform="rotate(-30 30 65)"/>
+    `;
+  } else if (type === 'blueberry') {
+    details = `
+      <circle cx="35" cy="25" r="5" fill="${detailColor}"/><circle cx="65" cy="28" r="6" fill="${detailColor}"/>
+      <circle cx="26" cy="50" r="5.5" fill="${detailColor}"/><circle cx="74" cy="52" r="5" fill="${detailColor}"/>
+      <circle cx="48" cy="75" r="6" fill="${detailColor}"/>
+    `;
+  } else if (type === 'asiago') {
+    details = `
+      <path d="M 30 20 Q 40 15 50 22 T 70 20" stroke="${detailColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M 20 45 Q 30 40 35 55" stroke="${detailColor}" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M 65 45 Q 75 55 80 45" stroke="${detailColor}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M 35 75 Q 50 80 65 72" stroke="${detailColor}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    `;
+  } else if (type === 'raisin') {
+    details = `
+      <ellipse cx="36" cy="26" rx="4" ry="3" fill="${detailColor}"/>
+      <ellipse cx="68" cy="30" rx="5" ry="4" fill="${detailColor}"/>
+      <ellipse cx="25" cy="52" rx="4" ry="5" fill="${detailColor}"/>
+      <ellipse cx="72" cy="56" rx="5" ry="3" fill="${detailColor}"/>
+      <ellipse cx="45" cy="74" rx="4" ry="4" fill="${detailColor}"/>
+    `;
+  } else if (type === 'sesame') {
+    for (let i = 0; i < 18; i++) {
+      let angle = (i / 18) * Math.PI * 2;
+      let rx = 50 + Math.cos(angle) * 26;
+      let ry = 50 + Math.sin(angle) * 26;
+      details += `<ellipse cx="${rx}" cy="${ry}" rx="1.5" ry="3" fill="${detailColor}" transform="rotate(${i * 20} ${rx} ${ry})"/>`;
+    }
   }
 
-  return false;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="42" fill="${baseColor}" stroke="#8c5823" stroke-width="4"/>
+    <circle cx="50" cy="50" r="16" fill="#ffffff" stroke="#8c5823" stroke-width="3"/>
+    ${details}
+  </svg>`;
+
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
 /* =========================================================
-   GAME STATE & CONTROL
+   BOUNCING PHYSICS ENGINE WITH HEADER COLLISION BOUNDS
    ========================================================= */
 
-let currentPage = "home";
-let currentMode = null;
-let gameActive = false;
+const canvas = document.getElementById('physicsCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height;
+function resizeCanvas() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class PhysicsItem {
+  constructor(type) {
+    this.type = type;
+    this.x = Math.random() * (width - 200) + 100;
+    this.y = Math.random() * (height - 200) + 100;
+
+    if (type.startsWith('ring')) {
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.radius = Math.random() * 20 + 70;
+      this.color = type === 'ringBrown' ? '#d8a25e' : '#6c88ff';
+    } else {
+      this.vx = (Math.random() - 0.5) * 1.5;
+      this.vy = (Math.random() - 0.5) * 1.5;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.vRot = (Math.random() - 0.5) * 0.02;
+
+      if (type === 'blueberry') this.radius = 22;
+      else if (type === 'creamCheese') this.radius = 28;
+      else this.radius = 8;
+    }
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.vRot) this.rotation += this.vRot;
+
+    if (this.x - this.radius < 0) { this.x = this.radius; this.vx = Math.abs(this.vx); }
+    if (this.x + this.radius > width) { this.x = width - this.radius; this.vx = -Math.abs(this.vx); }
+    if (this.y - this.radius < 0) { this.y = this.radius; this.vy = Math.abs(this.vy); }
+    if (this.y + this.radius > height) { this.y = height - this.radius; this.vy = -Math.abs(this.vy); }
+
+    const headerEl = document.getElementById('mainHeader');
+    if (headerEl) {
+      const rect = headerEl.getBoundingClientRect();
+      const pad = 10;
+      if (
+        this.x + this.radius > rect.left - pad &&
+        this.x - this.radius < rect.right + pad &&
+        this.y + this.radius > rect.top - pad &&
+        this.y - this.radius < rect.bottom + pad
+      ) {
+        if (this.y < rect.top || this.y > rect.bottom) {
+          this.vy = -this.vy;
+          if (this.y < rect.top) this.y = rect.top - pad - this.radius;
+          else this.y = rect.bottom + pad + this.radius;
+        } else {
+          this.vx = -this.vx;
+          if (this.x < rect.left) this.x = rect.left - pad - this.radius;
+          else this.x = rect.right + pad + this.radius;
+        }
+      }
+    }
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+
+    if (this.type.startsWith('ring')) {
+      ctx.globalAlpha = 0.12;
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      ctx.rotate(this.rotation);
+      ctx.globalAlpha = 0.45;
+
+      if (this.type === 'blueberry') {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        let grad = ctx.createRadialGradient(-6, -6, 3, 0, 0, this.radius);
+        grad.addColorStop(0, '#a1b6ff');
+        grad.addColorStop(1, '#5a70e3');
+        ctx.fillStyle = grad;
+        ctx.fill();
+      } else if (this.type === 'creamCheese') {
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#6c88ff';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.roundRect(-24, -14, 48, 28, 8);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#f7ca38';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 4, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.restore();
+  }
+}
+
+const items = [];
+items.push(new PhysicsItem('ringBrown'));
+items.push(new PhysicsItem('ringBrown'));
+items.push(new PhysicsItem('ringBlue'));
+
+for (let i = 0; i < 4; i++) items.push(new PhysicsItem('blueberry'));
+for (let i = 0; i < 3; i++) items.push(new PhysicsItem('creamCheese'));
+for (let i = 0; i < 10; i++) items.push(new PhysicsItem('sesame'));
+
+function resolveCollisions() {
+  for (let i = 0; i < items.length; i++) {
+    for (let j = i + 1; j < items.length; j++) {
+      let b1 = items[i];
+      let b2 = items[j];
+
+      if (b1.type.startsWith('ring') && b2.type.startsWith('ring')) continue;
+
+      let dx = b2.x - b1.x;
+      let dy = b2.y - b1.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+      let minDist = b1.radius + b2.radius;
+
+      if (dist < minDist && dist > 0) {
+        let overlap = minDist - dist;
+        let nx = dx / dist;
+        let ny = dy / dist;
+
+        if (!b1.type.startsWith('ring')) {
+          b1.x -= nx * (overlap / 2);
+          b1.y -= ny * (overlap / 2);
+        }
+        if (!b2.type.startsWith('ring')) {
+          b2.x += nx * (overlap / 2);
+          b2.y += ny * (overlap / 2);
+        }
+
+        let tempVx = b1.vx;
+        let tempVy = b1.vy;
+        b1.vx = b2.vx;
+        b1.vy = b2.vy;
+        b2.vx = tempVx;
+        b2.vy = tempVy;
+      }
+    }
+  }
+}
+
+function animatePhysics() {
+  ctx.clearRect(0, 0, width, height);
+  resolveCollisions();
+  items.forEach(item => {
+    item.update();
+    item.draw();
+  });
+  requestAnimationFrame(animatePhysics);
+}
+animatePhysics();
+
+/* =========================================================
+   WORD NETWORK
+   ========================================================= */
+
+const wordGraph = {
+  CAT: ["PET", "MEOW", "FUR", "FISH", "TIGER", "HOUSE"],
+  PET: ["CAT", "DOG", "ANIMAL", "HOME", "BIRD"],
+  DOG: ["PET", "BARK", "BONE", "WALK", "PARK", "PUPPY"],
+  MEOW: ["CAT", "MILK", "SOUND", "PET"],
+  FUR: ["CAT", "SOFT", "WARM", "COAT", "BEAR"],
+  TIGER: ["CAT", "FOREST", "ANIMAL", "WILD"],
+  PUPPY: ["DOG", "PET", "PLAY", "SOFT"],
+  BIRD: ["PET", "SKY", "TREE", "NEST", "FLY", "SONG"],
+  BEAR: ["FOREST", "FUR", "HONEY", "WILD", "RIVER"],
+  ANIMAL: ["PET", "TIGER", "BEAR", "BIRD", "FISH", "ZOO"],
+  ZOO: ["ANIMAL", "PARK", "CITY", "VISIT"],
+
+  BARK: ["DOG", "SOUND", "TREE", "WALK"],
+  SOUND: ["MEOW", "BARK", "MUSIC", "SONG", "ECHO"],
+  MUSIC: ["SOUND", "SONG", "DANCE", "NIGHT", "HOLIDAY", "RADIO"],
+  SONG: ["MUSIC", "BIRD", "SOUND", "SING"],
+  SING: ["SONG", "MUSIC", "VOICE"],
+  VOICE: ["SING", "SOUND", "TALK"],
+  TALK: ["VOICE", "FRIEND", "STORY"],
+  ECHO: ["SOUND", "MOUNTAIN", "ROOM"],
+
+  TREE: ["BARK", "FOREST", "LEAF", "WOOD", "BIRD", "PARK"],
+  FOREST: ["TREE", "LEAF", "WOOD", "BEAR", "CAMP", "WILD"],
+  LEAF: ["TREE", "GREEN", "WIND", "AUTUMN"],
+  WOOD: ["TREE", "FOREST", "FIRE", "CABIN", "TABLE"],
+  WILD: ["FOREST", "ANIMAL", "BEAR", "RIVER"],
+  RIVER: ["WATER", "FISH", "OCEAN", "RIVER", "BRIDGE", "BEAR"],
+  MOUNTAIN: ["SNOW", "COLD", "HIKE", "ROCK", "SKY", "CABIN"],
+  HIKE: ["MOUNTAIN", "WALK", "PARK", "CAMP", "TRAIL"],
+  TRAIL: ["HIKE", "FOREST", "WALK", "MAP"],
+  ROCK: ["MOUNTAIN", "STONE", "EARTH", "HARD"],
+  STONE: ["ROCK", "RIVER", "WALL"],
+  CAMP: ["FOREST", "HIKE", "FIRE", "TENT", "CABIN"],
+  TENT: ["CAMP", "OUTDOORS", "NIGHT", "SLEEP"],
+  CABIN: ["WOOD", "CAMP", "MOUNTAIN", "HOME", "WARM"],
+  GREEN: ["LEAF", "PARK", "GRASS", "COLOR"],
+  GRASS: ["GREEN", "PARK", "GARDEN", "EARTH"],
+  GARDEN: ["GRASS", "FLOWER", "PLANT", "SUN"],
+  FLOWER: ["GARDEN", "HONEY", "BEES", "SWEET", "SMELL"],
+  BEES: ["FLOWER", "HONEY", "SWEET", "INSECT"],
+
+  WATER: ["OCEAN", "FISH", "COFFEE", "ICE", "RAIN", "RIVER", "DRINK"],
+  OCEAN: ["WATER", "FISH", "SALT", "BEACH", "BLUE", "SHIP"],
+  BEACH: ["OCEAN", "SAND", "SUN", "PARK", "SALT", "WAVE"],
+  SAND: ["BEACH", "OCEAN", "DESERT", "GOLD"],
+  WAVE: ["OCEAN", "BEACH", "SURF", "WATER"],
+  RAIN: ["WATER", "CLOUD", "SKY", "COLD", "STORM"],
+  CLOUD: ["RAIN", "SKY", "WHITE", "SOFT", "FLY"],
+  STORM: ["RAIN", "WIND", "THUNDER", "SKY"],
+  WIND: ["STORM", "LEAF", "AIR", "COLD"],
+  AIR: ["WIND", "SKY", "FLY", "BREATHE"],
+  FLY: ["BIRD", "AIR", "PLANE", "SKY"],
+
+  BAGEL: ["BAKERY", "DOUGH", "CHEESE", "CREAM", "BREAKFAST", "TOAST", "SESAME"],
+  SESAME: ["BAGEL", "BREAD", "SEED", "CRISPY"],
+  SEED: ["SESAME", "PLANT", "GARDEN", "FLOWER"],
+  BREAD: ["BAKERY", "FLOUR", "TOAST", "SANDWICH", "BUTTER"],
+  FLOUR: ["SALT", "BREAD", "BAKERY", "DOUGH", "GRAIN"],
+  BAKERY: ["FLOUR", "BREAD", "BAGEL", "CAKE", "PASTRY", "OVEN"],
+  DOUGH: ["FLOUR", "BAKERY", "BAGEL", "PIZZA", "CRUST"],
+  CRUST: ["DOUGH", "PIZZA", "BREAD", "CRISPY"],
+  CRISPY: ["CRUST", "TOAST", "SESAME", "SNACK"],
+  BUTTER: ["SALT", "BREAD", "MILK", "CAKE", "SPREAD"],
+  PIZZA: ["DOUGH", "CHEESE", "BAKERY", "FOOD", "OVEN"],
+  CAKE: ["BAKERY", "SWEET", "BUTTER", "CREAM", "SUGAR", "CANDY"],
+  PASTRY: ["BAKERY", "SWEET", "BUTTER", "JAM"],
+  JAM: ["SWEET", "PASTRY", "FRUIT", "BERRY", "SPREAD"],
+  BERRY: ["JAM", "FRUIT", "BLUEBERRY", "SWEET"],
+  BLUEBERRY: ["BERRY", "FRUIT", "CREAM", "SWEET", "BLUE"],
+  FRUIT: ["JAM", "BERRY", "BLUEBERRY", "SWEET", "JUICE", "APPLE"],
+  APPLE: ["FRUIT", "TREE", "JUICE", "SWEET"],
+  JUICE: ["FRUIT", "DRINK", "SWEET", "APPLE"],
+  HONEY: ["BEES", "SWEET", "BEAR", "TEA", "SPREAD"],
+  SPREAD: ["BUTTER", "JAM", "HONEY", "CREAM"],
+  SUGAR: ["SWEET", "CAKE", "CANDY", "COFFEE", "TEA"],
+  CANDY: ["SWEET", "SUGAR", "CHOCOLATE", "SNACK"],
+  CHOCOLATE: ["CANDY", "SWEET", "MILK", "CAKE", "HOT"],
+  SNACK: ["CANDY", "FOOD", "CRISPY", "FRUIT"],
+  SALT: ["OCEAN", "FOOD", "FLOUR", "BUTTER", "SEASON"],
+  CHEESE: ["BAGEL", "MILK", "PIZZA", "FOOD", "CREAM"],
+  CREAM: ["BAGEL", "COFFEE", "MILK", "SWEET", "BLUEBERRY"],
+  BREAKFAST: ["BAGEL", "COFFEE", "MORNING", "EGG", "TOAST", "TEA"],
+  COFFEE: ["BREAKFAST", "CREAM", "WATER", "HOT", "CUP", "SUGAR"],
+  TEA: ["BREAKFAST", "HOT", "CUP", "HONEY", "SUGAR", "WATER"],
+  CUP: ["COFFEE", "TEA", "DRINK"],
+  MILK: ["CREAM", "CHEESE", "MEOW", "DRINK", "CHOCOLATE"],
+  FOOD: ["SALT", "CHEESE", "FISH", "EGG", "SNACK", "PIZZA"],
+  EGG: ["BREAKFAST", "FOOD", "MORNING", "BUTTER", "FARM"],
+  FARM: ["EGG", "ANIMAL", "GRASS", "EARTH"],
+  TOAST: ["BREAD", "BREAKFAST", "BUTTER", "HOT", "CRISPY"],
+  SANDWICH: ["BREAD", "CHEESE", "FOOD", "LUNCH"],
+  LUNCH: ["SANDWICH", "FOOD", "DAY", "NOON"],
+  NOON: ["LUNCH", "DAY", "SUN"],
+  DRINK: ["MILK", "WATER", "COFFEE", "TEA", "JUICE"],
+  SWEET: ["CREAM", "CAKE", "MILK", "SUGAR", "HONEY", "CANDY"],
+  OVEN: ["BAKERY", "PIZZA", "HEAT", "COOK"],
+  COOK: ["OVEN", "FOOD", "KITCHEN", "HOT"],
+  KITCHEN: ["COOK", "OVEN", "HOME", "TABLE"],
+
+  HOME: ["PET", "BED", "FAMILY", "ROOM", "CABIN", "HOUSE", "KITCHEN"],
+  HOUSE: ["ROOM", "HOME", "DOOR", "STREET", "CITY"],
+  ROOM: ["BED", "HOME", "HOUSE", "TABLE", "WALL"],
+  BED: ["SLEEP", "HOME", "WARM", "ROOM", "REST"],
+  TABLE: ["WOOD", "ROOM", "KITCHEN", "CHAIR"],
+  CHAIR: ["TABLE", "ROOM", "SIT", "REST"],
+  SIT: ["CHAIR", "REST", "PARK"],
+  WALL: ["ROOM", "STONE", "PAINT"],
+  PAINT: ["WALL", "COLOR", "ART"],
+  ART: ["PAINT", "COLOR", "MUSIC"],
+  CITY: ["HOUSE", "STREET", "STORE", "BUS", "ZOO", "BUILDING"],
+  STREET: ["CITY", "WALK", "BUS", "CAR"],
+  STORE: ["CITY", "BUY", "FOOD", "BAG"],
+  BUY: ["STORE", "MONEY", "SHOP"],
+  BAG: ["STORE", "CARRY", "PACK"],
+  BUS: ["CITY", "STREET", "TRAVEL", "CAR"],
+  CAR: ["STREET", "DRIVE", "TRAVEL", "BUS"],
+  DRIVE: ["CAR", "TRAVEL", "ROAD"],
+  ROAD: ["DRIVE", "STREET", "MAP", "TRAIL"],
+  MAP: ["ROAD", "TRAIL", "TRAVEL", "EXPLORE"],
+  TRAVEL: ["BUS", "CAR", "PLANE", "MAP", "EXPLORE", "TRIP"],
+  PLANE: ["TRAVEL", "FLY", "SKY", "AIR"],
+  EXPLORE: ["TRAVEL", "MAP", "HIKE", "CAMP"],
+
+  NIGHT: ["SKY", "DARK", "SLEEP", "MOON", "STAR", "TENT"],
+  SLEEP: ["NIGHT", "BED", "REST", "DARK", "DREAM"],
+  DREAM: ["SLEEP", "NIGHT", "STAR"],
+  DARK: ["NIGHT", "SLEEP", "MOON", "SHADOW"],
+  SHADOW: ["DARK", "SUN", "NIGHT"],
+  MOON: ["NIGHT", "DARK", "SKY", "STAR", "GLOW"],
+  STAR: ["MOON", "NIGHT", "SKY", "GLOW", "SPARKLE"],
+  GLOW: ["STAR", "MOON", "FIRE", "LIGHT"],
+  LIGHT: ["GLOW", "SUN", "DAY", "LAMP"],
+  LAMP: ["LIGHT", "ROOM", "NIGHT"],
+  REST: ["SLEEP", "BED", "HOME", "SIT", "RELAX"],
+  RELAX: ["REST", "WARM", "HOME", "TEA"],
+  MORNING: ["BREAKFAST", "EGG", "SUN", "COFFEE", "DAY"],
+  DAY: ["SUN", "MORNING", "SKY", "LIGHT", "NOON"],
+
+  HOT: ["COFFEE", "WARM", "SUN", "FIRE", "HEAT"],
+  HEAT: ["HOT", "OVEN", "FIRE", "SUN"],
+  WARM: ["HOT", "SUN", "FUR", "COAT", "RELAX", "CABIN"],
+  COLD: ["ICE", "SNOW", "WINTER", "FREEZE", "RAIN"],
+  ICE: ["WATER", "COLD", "SNOW", "CREAM", "FREEZE"],
+  SNOW: ["COLD", "WINTER", "WHITE", "ICE", "MOUNTAIN"],
+  FREEZE: ["COLD", "ICE", "SNOW", "WINTER"],
+  WINTER: ["COLD", "SNOW", "HOLIDAY", "COAT"],
+  COAT: ["WINTER", "FUR", "WARM", "CLOTHES"],
+  CLOTHES: ["COAT", "WEAR", "SOFT"],
+  WEAR: ["CLOTHES", "COAT"],
+  HOLIDAY: ["WINTER", "FAMILY", "HOME", "MUSIC", "GIFT"],
+  GIFT: ["HOLIDAY", "HAPPY", "PARTY"],
+  HAPPY: ["GIFT", "SMILE", "FRIEND", "PARTY"],
+  PARTY: ["HAPPY", "MUSIC", "DANCE", "CAKE"],
+  DANCE: ["PARTY", "MUSIC", "MOVE"],
+  FRIEND: ["HAPPY", "TALK", "FAMILY", "PARTY"],
+  FAMILY: ["HOME", "HOLIDAY", "PET", "FRIEND"],
+  SUN: ["HOT", "WARM", "SKY", "DAY", "LIGHT", "YELLOW"],
+  SKY: ["SUN", "BLUE", "NIGHT", "CLOUD", "BIRD", "STAR"],
+  BLUE: ["SKY", "OCEAN", "COLOR", "WATER", "BLUEBERRY"],
+  WHITE: ["SNOW", "MILK", "CLOUD", "SOFT"],
+  YELLOW: ["SUN", "GOLD", "COLOR"],
+  GOLD: ["YELLOW", "SAND", "STAR"],
+  SOFT: ["FUR", "CLOUD", "BED"],
+  COLOR: ["BLUE", "WHITE", "GREEN", "YELLOW", "PAINT", "ART"]
+};
+
+const allWords = Object.keys(wordGraph);
+
+/* =========================================================
+   USER PROFILES & MANAGEMENT
+   ========================================================= */
 
 let currentWord = "";
 let targetWord = "";
 let chain = [];
+let gameActive = false;
+let playerName = localStorage.getItem("everythingBagel_lastPlayer") || "Bagel Boss";
+let playerFlavor = localStorage.getItem("everythingBagel_lastFlavor") || "Everything";
 
-let timer = null;
-let timeLeft = 30;
-let speedRound = 0;
-
-let mazeWords = [];
-let mazeUsed = [];
-let mazeCurrent = null;
-
-const classicPuzzles = [
-  ["CAT", "WINTER"],
-  ["SUN", "ICE"],
-  ["DOG", "OCEAN"],
-  ["BAGEL", "SPACE"],
-  ["COFFEE", "SNOW"],
-  ["BEACH", "MOON"]
-];
-
-function setInputState(enabled) {
-  const input = document.getElementById("wordInput");
-  const btn = document.getElementById("connectBtn");
-  input.disabled = !enabled;
-  btn.disabled = !enabled;
-  if (enabled) {
-    input.focus();
-  } else {
-    input.blur();
+function getStoredProfiles() {
+  try {
+    const profiles = localStorage.getItem("everythingBagel_profiles_v2");
+    return profiles ? JSON.parse(profiles) : [{ name: "Bagel Boss", flavor: "Everything" }];
+  } catch {
+    return [{ name: "Bagel Boss", flavor: "Everything" }];
   }
 }
 
-function showPage(page) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
+function saveProfiles(profiles) {
+  localStorage.setItem("everythingBagel_profiles_v2", JSON.stringify(profiles));
+}
 
-  document.querySelectorAll(".nav-btn").forEach((btn, i) => {
-    btn.classList.toggle("active", (page === 'home' && i===0) || (page === 'how' && i===1) || (page === 'scores' && i===2));
+function getLeaderboard() {
+  try {
+    const data = localStorage.getItem("everythingBagel_leaderboard_clean");
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveScore(name, steps) {
+  const leaderboard = getLeaderboard();
+  const newEntry = {
+    name: name || "Bagel Boss",
+    steps: steps,
+    date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
+  };
+  
+  leaderboard.push(newEntry);
+  leaderboard.sort((a, b) => a.steps - b.steps);
+  
+  const trimmed = leaderboard.slice(0, 10);
+  localStorage.setItem("everythingBagel_leaderboard_clean", JSON.stringify(trimmed));
+  return newEntry;
+}
+
+function renderLeaderboardTable(highlightEntry = null) {
+  const leaderboard = getLeaderboard();
+  
+  if (leaderboard.length === 0) {
+    return `<div class="empty-state">No scores recorded yet. Be the first to play and claim #1! 🥯</div>`;
+  }
+
+  let html = `
+    <table class="leaderboard-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Player</th>
+          <th>Steps</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  leaderboard.forEach((entry, index) => {
+    const isHighlight = highlightEntry && highlightEntry.name === entry.name && highlightEntry.steps === entry.steps;
+    html += `
+      <tr class="${isHighlight ? 'highlight' : ''}">
+        <td><span class="rank-badge">${index + 1}</span></td>
+        <td>${entry.name}</td>
+        <td>${entry.steps}</td>
+        <td>${entry.date}</td>
+      </tr>
+    `;
   });
 
-  currentPage = page;
-  if (page !== "game") stopTimer();
+  html += `</tbody></table>`;
+  return html;
 }
 
-/* CLASSIC MODE */
-function startClassic() {
-  currentMode = "classic";
-  gameActive = true;
-  const puzzle = classicPuzzles[Math.floor(Math.random() * classicPuzzles.length)];
-
-  currentWord = puzzle[0];
-  targetWord = puzzle[1];
-  chain = [currentWord];
-
-  document.getElementById("modeLabel").textContent = "🧠 CLASSIC";
-  document.getElementById("scoreDisplay").textContent = "Words: 1";
-  document.getElementById("timerDisplay").style.display = "none";
-
-  document.getElementById("classicArea").style.display = "block";
-  document.getElementById("mazeArea").style.display = "none";
-  document.getElementById("normalInput").style.display = "block";
-
-  document.getElementById("startWord").textContent = currentWord;
-  document.getElementById("targetWord").textContent = targetWord;
-
-  setInputState(true);
-  hideResult();
-  updateChain();
-  showPage("game");
+function showLeaderboardView() {
+  document.getElementById("standaloneLeaderboard").innerHTML = renderLeaderboardTable();
+  showPage("leaderboardView");
 }
 
-/* SPEEDRUN MODE */
-function startSpeedrun() {
-  currentMode = "speed";
-  gameActive = true;
-  speedRound = 0;
-  timeLeft = 30;
-
-  document.getElementById("modeLabel").textContent = "⚡ SPEEDRUN";
-  document.getElementById("timerDisplay").style.display = "block";
-  document.getElementById("classicArea").style.display = "block";
-  document.getElementById("mazeArea").style.display = "none";
-  document.getElementById("normalInput").style.display = "block";
-
-  hideResult();
-  setInputState(true);
-  nextSpeedRound();
-  showPage("game");
-}
-
-function nextSpeedRound() {
-  speedRound++;
-  const puzzle = classicPuzzles[Math.floor(Math.random() * classicPuzzles.length)];
-
-  currentWord = puzzle[0];
-  targetWord = puzzle[1];
-  chain = [currentWord];
-
-  document.getElementById("startWord").textContent = currentWord;
-  document.getElementById("targetWord").textContent = targetWord;
-  document.getElementById("scoreDisplay").textContent = `Rounds: ${speedRound - 1}`;
-
-  setInputState(true);
-  updateChain();
-  updateTimer();
-  stopTimer();
-
-  timer = setInterval(() => {
-    timeLeft--;
-    updateTimer();
-    if (timeLeft <= 0) {
-      stopTimer();
-      gameActive = false;
-      setInputState(false);
-      saveScore("speed", speedRound - 1);
-      showResult("💥 TIME'S UP!", `You completed ${speedRound - 1} rounds!`);
-    }
-  }, 1000);
-}
-
-/* CONNECT INPUT HANDLING */
-function connectWord() {
-  if (!gameActive || currentMode === "maze") return;
-
-  const input = document.getElementById("wordInput");
-  const val = input.value.trim();
-  const word = cleanWord(val);
-
-  if (!word) return;
-  const displayWord = val.toUpperCase();
-
-  if (areConnected(currentWord, word)) {
-    chain.push(displayWord);
-    currentWord = displayWord;
-    updateChain();
-    input.value = "";
-    showFeedback("CONNECTED! ✨", true);
-
-    if (currentMode === "classic") {
-      document.getElementById("scoreDisplay").textContent = `Words: ${chain.length}`;
-      if (cleanWord(currentWord) === cleanWord(targetWord)) {
-        gameActive = false;
-        setInputState(false); // Lock inputs immediately
-        saveScore("classic", chain.length - 1);
-        showResult("🎉 BAGEL ACHIEVED!", `Reached target in ${chain.length - 1} steps!`);
-      }
-    } else if (currentMode === "speed") {
-      if (cleanWord(currentWord) === cleanWord(targetWord)) {
-        timeLeft += 4; // Bonus time
-        nextSpeedRound();
-      }
-    }
+function handleNavClick(pageId) {
+  if (pageId === "leaderboardView") {
+    showLeaderboardView();
   } else {
-    showFeedback(`"${displayWord}" doesn't connect to ${currentWord}!`, false);
+    showPage(pageId);
+  }
+}
+
+/* MODAL & PROFILE SELECTION FLOW */
+function openPlayerModal() {
+  document.getElementById("stepNameView").style.display = "block";
+  document.getElementById("stepFlavorView").style.display = "none";
+  document.getElementById("stepEditMenuView").style.display = "none";
+  document.getElementById("stepRenameView").style.display = "none";
+  document.getElementById("stepLeaderboardModalView").style.display = "none";
+  toggleNewUserInput(false);
+  renderAlphabeticalPlayerList();
+  document.getElementById("nameModal").style.display = "flex";
+}
+
+function openEditMenuModal() {
+  document.getElementById("stepNameView").style.display = "none";
+  document.getElementById("stepFlavorView").style.display = "none";
+  document.getElementById("stepRenameView").style.display = "none";
+  document.getElementById("stepLeaderboardModalView").style.display = "none";
+  document.getElementById("stepEditMenuView").style.display = "block";
+  document.getElementById("nameModal").style.display = "flex";
+}
+
+function openRenameModalFromEdit() {
+  document.getElementById("stepEditMenuView").style.display = "none";
+  document.getElementById("stepRenameView").style.display = "block";
+  document.getElementById("renameInput").value = playerName;
+  document.getElementById("renameInput").focus();
+}
+
+function openFlavorModalFromEdit() {
+  document.getElementById("stepEditMenuView").style.display = "none";
+  document.getElementById("stepFlavorView").style.display = "block";
+  renderFlavorGrid();
+  document.getElementById("flavorSubtitle").textContent = `Choose a new avatar for ${playerName}!`;
+}
+
+function openGlobalLeaderboardModal() {
+  document.getElementById("stepNameView").style.display = "none";
+  document.getElementById("stepFlavorView").style.display = "none";
+  document.getElementById("stepEditMenuView").style.display = "none";
+  document.getElementById("stepRenameView").style.display = "none";
+  
+  const lbModalView = document.getElementById("stepLeaderboardModalView");
+  lbModalView.style.display = "block";
+  document.getElementById("modalLeaderboardContainer").innerHTML = renderLeaderboardTable();
+  document.getElementById("nameModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("nameModal").style.display = "none";
+}
+
+function saveNewName() {
+  const newName = document.getElementById("renameInput").value.trim();
+  if (newName) {
+    const profiles = getStoredProfiles();
+    const p = profiles.find(item => item.name === playerName);
+    if (p) {
+      p.name = newName;
+    } else {
+      profiles.push({ name: newName, flavor: playerFlavor });
+    }
+    saveProfiles(profiles);
+    playerName = newName;
+    localStorage.setItem("everythingBagel_lastPlayer", playerName);
+    updateBadgeUI();
+  }
+  closeModal();
+}
+
+function toggleNewUserInput(show) {
+  const box = document.getElementById("newUserBox");
+  box.style.display = show ? "block" : "none";
+  if (show) {
+    document.getElementById("playerNameInput").focus();
+  }
+}
+
+function renderAlphabeticalPlayerList() {
+  const profiles = getStoredProfiles();
+  profiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+
+  const container = document.getElementById("playerSelectList");
+  container.innerHTML = "";
+
+  if (profiles.length === 0) {
+    container.innerHTML = `<div class="empty-state">No saved profiles. Click 'NEW USER' to create one!</div>`;
+    return;
+  }
+
+  profiles.forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "player-item-btn";
+
+    const avatarSrc = BAGEL_AVATARS[p.flavor] || BAGEL_AVATARS["Everything"];
+    btn.innerHTML = `<img class="profile-avatar-img" src="${avatarSrc}" alt="${p.flavor}"> <span>${p.name}</span>`;
+    btn.onclick = () => selectExistingPlayerDirectly(p.name, p.flavor);
+    container.appendChild(btn);
+  });
+}
+
+function selectExistingPlayerDirectly(name, flavor) {
+  playerName = name;
+  playerFlavor = flavor || "Everything";
+  localStorage.setItem("everythingBagel_lastPlayer", playerName);
+  localStorage.setItem("everythingBagel_lastFlavor", playerFlavor);
+
+  closeModal();
+  updateBadgeUI();
+  startGame();
+}
+
+function renderFlavorGrid() {
+  const container = document.getElementById("flavorGrid");
+  container.innerHTML = "";
+
+  const flavors = [
+    { name: "Everything", label: "Everything 🥯" },
+    { name: "Blueberry", label: "Blueberry 🫐" },
+    { name: "Asiago Cheese", label: "Asiago Cheese 🧀" },
+    { name: "Plain", label: "Plain Golden 🍞" },
+    { name: "Cinnamon Raisin", label: "Cinnamon Raisin 🍁" },
+    { name: "Sesame", label: "Sesame Seed 🌾" }
+  ];
+
+  flavors.forEach(f => {
+    const btn = document.createElement("button");
+    btn.className = "flavor-btn";
+    const avatarSrc = BAGEL_AVATARS[f.name];
+    btn.innerHTML = `<img class="flavor-avatar" src="${avatarSrc}" alt="${f.name}"> <span>${f.label}</span>`;
+    btn.onclick = () => selectBagelFlavor(f.name);
+    container.appendChild(btn);
+  });
+}
+
+function goToFlavorStepFromNew() {
+  const input = document.getElementById("playerNameInput").value.trim() || "Bagel Boss";
+  playerName = input;
+  playerFlavor = "Everything";
+
+  renderFlavorGrid();
+  document.getElementById("stepNameView").style.display = "none";
+  document.getElementById("stepFlavorView").style.display = "block";
+  document.getElementById("flavorSubtitle").textContent = `Choose a bagel avatar for ${playerName}!`;
+}
+
+function selectBagelFlavor(flavorKey) {
+  playerFlavor = flavorKey;
+  localStorage.setItem("everythingBagel_lastFlavor", playerFlavor);
+
+  const profiles = getStoredProfiles();
+  const existing = profiles.find(p => p.name === playerName);
+  if (existing) {
+    existing.flavor = playerFlavor;
+  } else {
+    profiles.push({ name: playerName, flavor: playerFlavor });
+  }
+  saveProfiles(profiles);
+
+  closeModal();
+  updateBadgeUI();
+  startGame();
+}
+
+function updateBadgeUI() {
+  const avatarSrc = BAGEL_AVATARS[playerFlavor] || BAGEL_AVATARS["Everything"];
+  document.getElementById("badgeAvatar").src = avatarSrc;
+  document.getElementById("badgeName").textContent = `${playerName}`;
+}
+
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  if (pageId === "home") document.getElementById("navHome").classList.add("active");
+  if (pageId === "howView") document.getElementById("navHow").classList.add("active");
+  if (pageId === "leaderboardView") document.getElementById("navLeaderboard").classList.add("active");
+  if (pageId === "game") document.getElementById("navHome").classList.add("active");
+}
+
+/* PATHING & DISTANCE CALCULATION (BFS) */
+function getDistance(start, target) {
+  if (start === target) return 0;
+  let queue = [[start, 0]];
+  let visited = new Set([start]);
+
+  while (queue.length > 0) {
+    let [node, dist] = queue.shift();
+    let neighbors = wordGraph[node] || [];
+
+    for (let neighbor of neighbors) {
+      if (neighbor === target) return dist + 1;
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, dist + 1]);
+      }
+    }
+  }
+  return 99;
+}
+
+function getChoiceOptions(current, target) {
+  let options = new Set();
+  const directNeighbors = wordGraph[current] || [];
+
+  directNeighbors.forEach(n => options.add(n));
+
+  if (options.size < 3) {
+    directNeighbors.forEach(n => {
+      (wordGraph[n] || []).forEach(secondN => {
+        if (secondN !== current && options.size < 3) {
+          options.add(secondN);
+        }
+      });
+    });
+  }
+
+  while (options.size < 3) {
+    let rand = allWords[Math.floor(Math.random() * allWords.length)];
+    if (rand !== current) options.add(rand);
+  }
+
+  return Array.from(options).sort(() => Math.random() - 0.5).slice(0, 3);
+}
+
+function startGame() {
+  startNewPuzzle();
+}
+
+function startNewPuzzle() {
+  gameActive = true;
+
+  document.getElementById("boardContent").classList.remove("blurred");
+  document.getElementById("resultOverlay").style.display = "none";
+
+  updateBadgeUI();
+
+  let start = allWords[Math.floor(Math.random() * allWords.length)];
+  let target = allWords[Math.floor(Math.random() * allWords.length)];
+
+  while (start === target || getDistance(start, target) < 5) {
+    start = allWords[Math.floor(Math.random() * allWords.length)];
+    target = allWords[Math.floor(Math.random() * allWords.length)];
+  }
+
+  currentWord = start;
+  targetWord = target;
+  chain = [currentWord];
+
+  document.getElementById("startWord").textContent = currentWord;
+  document.getElementById("targetWord").textContent = targetWord;
+  document.getElementById("stepCounter").textContent = "Steps: 0";
+
+  showFeedback("Pick a word to navigate deeper...");
+
+  updateChain();
+  renderChoices();
+  showPage("game");
+}
+
+function renderChoices() {
+  const container = document.getElementById("choicesContainer");
+  container.innerHTML = "";
+
+  const options = getChoiceOptions(currentWord, targetWord);
+
+  options.forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "choice-btn";
+    btn.textContent = word;
+    btn.onclick = () => selectChoice(word);
+    container.appendChild(btn);
+  });
+}
+
+function selectChoice(word) {
+  if (!gameActive) return;
+
+  chain.push(word);
+  currentWord = word;
+  updateChain();
+
+  if (currentWord === targetWord) {
+    gameActive = false;
+    const finalSteps = chain.length - 1;
+    
+    const savedEntry = saveScore(playerName, finalSteps);
+
+    document.getElementById("boardContent").classList.add("blurred");
+    document.getElementById("resultText").textContent = `${playerName}, you reached ${targetWord} in ${finalSteps} steps!`;
+    document.getElementById("endGameLeaderboard").innerHTML = renderLeaderboardTable(savedEntry);
+    document.getElementById("resultOverlay").style.display = "flex";
+  } else {
+    showFeedback(`Stepped to "${word}". Choose your next word...`);
+    renderChoices();
   }
 }
 
 function updateChain() {
   const el = document.getElementById("chain");
   el.innerHTML = "";
+
   chain.forEach((w, i) => {
     const span = document.createElement("span");
     span.className = "chain-word" + (i === chain.length - 1 ? " current" : "");
     span.textContent = w;
     el.appendChild(span);
+
     if (i < chain.length - 1) {
       const arr = document.createElement("span");
       arr.textContent = "→";
-      arr.style.padding = "0 4px";
+      arr.style.padding = "0 2px";
       el.appendChild(arr);
     }
   });
+
+  document.getElementById("stepCounter").textContent = `Steps: ${chain.length - 1}`;
 }
 
-/* MAZE MODE */
-const mazeSets = [
-  ["CAT", "PET", "DOG", "BARK", "BONE", "MEOW", "FUR", "SOFT", "BED"]
-];
-
-function startMaze() {
-  currentMode = "maze";
-  gameActive = true;
-  mazeWords = [...mazeSets[0]];
-  mazeUsed = [];
-  mazeCurrent = null;
-
-  document.getElementById("modeLabel").textContent = "🌀 MAZE";
-  document.getElementById("scoreDisplay").textContent = "Visited: 0/9";
-  document.getElementById("timerDisplay").style.display = "none";
-
-  document.getElementById("classicArea").style.display = "none";
-  document.getElementById("mazeArea").style.display = "block";
-  document.getElementById("normalInput").style.display = "none";
-
-  hideResult();
-  drawMaze();
-  showPage("game");
+function showFeedback(msg) {
+  document.getElementById("feedback").textContent = msg;
 }
 
-function drawMaze() {
-  const board = document.getElementById("mazeBoard");
-  board.innerHTML = "";
-
-  mazeWords.forEach((word) => {
-    const btn = document.createElement("button");
-    btn.className = "maze-word";
-    if (mazeUsed.includes(word)) btn.classList.add("used");
-    if (mazeCurrent === word) btn.classList.add("current-head");
-
-    btn.textContent = word;
-    btn.onclick = () => selectMazeWord(word);
-    board.appendChild(btn);
-  });
-
-  const chainEl = document.getElementById("mazeChain");
-  chainEl.innerHTML = mazeUsed.map(w => `<span class="chain-word current">${w}</span>`).join(" → ");
-}
-
-function selectMazeWord(word) {
-  if (!gameActive || mazeUsed.includes(word)) return;
-
-  if (!mazeCurrent || areConnected(mazeCurrent, word)) {
-    mazeCurrent = word;
-    mazeUsed.push(word);
-    document.getElementById("scoreDisplay").textContent = `Visited: ${mazeUsed.length}/${mazeWords.length}`;
-    drawMaze();
-
-    if (mazeUsed.length === mazeWords.length) {
-      gameActive = false;
-      saveScore("maze", 1);
-      showResult("🌀 MAZE CLEARED!", "You visited every single word in the grid!");
-    }
-  } else {
-    showFeedback(`Cannot bridge ${mazeCurrent} to ${word}!`, false);
-  }
-}
-
-/* HELPERS & SCORES */
-function showFeedback(msg, good) {
-  const el = document.getElementById("feedback");
-  el.textContent = msg;
-  el.className = `feedback ${good ? "good" : "bad"}`;
-}
-
-function showResult(title, text) {
-  document.getElementById("resultTitle").textContent = title;
-  document.getElementById("resultText").textContent = text;
-  document.getElementById("result").style.display = "block";
-}
-
-function hideResult() {
-  document.getElementById("result").style.display = "none";
-}
-
-function restartCurrent() {
-  if (currentMode === "classic") startClassic();
-  if (currentMode === "speed") startSpeedrun();
-  if (currentMode === "maze") startMaze();
-}
-
-function updateTimer() {
-  document.getElementById("timerDisplay").textContent = `⏱ ${timeLeft}`;
-}
-
-function stopTimer() {
-  if (timer) clearInterval(timer);
-  timer = null;
-}
-
-function saveScore(mode, val) {
-  const key = "bagelScores_" + mode;
-  const scores = JSON.parse(localStorage.getItem(key) || "[]");
-  scores.push({ score: val, date: new Date().toLocaleDateString() });
-  localStorage.setItem(key, JSON.stringify(scores));
-}
-
-function showScores(mode) {
-  const list = document.getElementById("scoreList");
-  const scores = JSON.parse(localStorage.getItem("bagelScores_" + mode) || "[]");
-  list.innerHTML = scores.length ? "" : "<li>No scores recorded yet!</li>";
-
-  document.querySelectorAll(".score-tab").forEach((t, i) => {
-    t.classList.toggle("active", (mode==='classic' && i===0)||(mode==='speed' && i===1)||(mode==='maze' && i===2));
-  });
-
-  scores.forEach((entry, idx) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span>#${idx+1} ${entry.date}</span><span>${entry.score} ${mode === 'classic' ? 'connections' : 'rounds'}</span>`;
-    list.appendChild(li);
-  });
-}
-
-// Init
+// Initialize
+updateBadgeUI();
 showPage("home");
 </script>
 </body>
