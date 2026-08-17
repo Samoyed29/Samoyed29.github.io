@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MELTDOWN — Survival Trivia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #050505;
+      color: #f3f4f6;
+      overflow: hidden;
+    }
+    .crt-glow {
+      box-shadow: inset 0 0 80px rgba(255, 69, 0, 0.12);
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-12px, 8px); }
+      40% { transform: translate(12px, -8px); }
+      60% { transform: translate(-8px, -5px); }
+      80% { transform: translate(8px, 5px); }
+      100% { transform: translate(0, 0); }
+    }
+    .shake {
+      animation: shake 0.35s ease-in-out;
+    }
+    @keyframes eruptionFlash {
+      0% { background-color: #050505; }
+      20% { background-color: #ff3300; }
+      50% { background-color: #ffcc00; }
+      100% { background-color: #050505; }
+    }
+    .erupting {
+      animation: eruptionFlash 0.8s ease-out;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0000; }
+    ::-webkit-scrollbar-thumb { background: #7f1d1d; }
+  </style>
+</head>
+<body id="body-root" class="h-screen w-screen flex flex-col justify-between p-6 crt-glow select-none relative">
+
+  <!-- BACKGROUND LAVA & CORNER GLASS CRACKS CANVAS -->
+  <canvas id="lava-canvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- TOP STATUS BAR -->
+  <header id="hud" class="flex justify-between items-center text-red-500 tracking-widest text-lg border-b border-red-900/40 pb-4 z-10 hidden">
+    <div>WAVE <span id="hud-round" class="text-orange-400">01</span></div>
+    <div>HEAT <span id="hud-heat" class="text-orange-400">SAFE</span></div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main id="main-container" class="flex-1 flex flex-col items-center justify-center relative z-10 max-w-3xl mx-auto w-full">
+    
+    <!-- TITLE SCREEN -->
+    <div id="screen-title" class="flex flex-col items-center text-center space-y-6">
+      <h1 class="text-6xl md:text-8xl font-black text-red-600 tracking-tighter drop-shadow-[0_0_30px_rgba(255,0,0,0.7)]">MELTDOWN</h1>
+      <p class="text-red-400/80 tracking-widest text-sm">TWO ARE TRUE. ONE IS A LIE.</p>
+      
+      <div class="flex flex-col space-y-3 w-52 mt-8">
+        <button onclick="startGame()" class="border border-red-600 bg-red-950/20 hover:bg-red-600 hover:text-black py-3 tracking-widest transition duration-200 font-bold">PLAY</button>
+        <button onclick="showHowTo()" class="border border-neutral-700 bg-neutral-900/40 hover:border-neutral-400 text-neutral-400 hover:text-white py-3 tracking-widest transition duration-200">HOW TO PLAY</button>
+      </div>
+      <div id="title-best" class="text-xs text-neutral-500 tracking-widest mt-4">BEST WAVES: 0</div>
+    </div>
+
+    <!-- HOW TO PLAY SCREEN -->
+    <div id="screen-howto" class="hidden flex flex-col items-center text-center max-w-md space-y-6">
+      <h2 class="text-3xl text-red-500 tracking-widest">PROTOCOL</h2>
+      <div class="text-neutral-400 text-sm space-y-3 text-left border border-red-900/30 p-6 bg-red-950/10 backdrop-blur-sm">
+        <p>• Three statements will appear each wave.</p>
+        <p>• Two are true. One is a lie.</p>
+        <p>• Identify and select the lie.</p>
+        <p>• The game never tells you if you're right.</p>
+        <p>• Survive until the core erupts and the lava reaches the top.</p>
+      </div>
+      <button onclick="showTitle()" class="border border-neutral-700 text-neutral-400 hover:text-white px-8 py-2 tracking-widest">BACK</button>
+    </div>
+
+    <!-- GAMEPLAY SCREEN -->
+    <div id="screen-game" class="hidden w-full flex flex-col justify-center h-full py-6 space-y-8">
+      <div class="text-center text-red-400/60 text-sm tracking-widest">IDENTIFY THE LIE</div>
+      
+      <!-- LARGER QUESTIONS CONTAINER -->
+      <div id="facts-container" class="space-y-4 w-full">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="text-center text-xs tracking-widest text-neutral-500 pt-4">
+        <span id="horror-status" class="text-red-500 opacity-0 transition-opacity">⚠️ ANOMALY DETECTED IN THE HEAT</span>
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="screen-gameover" class="hidden flex flex-col items-center text-center space-y-6">
+      <h1 class="text-5xl md:text-7xl font-black text-red-600 tracking-tighter drop-shadow-[0_0_20px_rgba(255,0,0,0.8)]">MELTDOWN</h1>
+      <p class="text-red-400/80 tracking-widest text-xs">CORE OVERHEAT</p>
+      <div class="border border-red-900/40 p-6 bg-red-950/20 text-neutral-300 space-y-2 w-72 text-left backdrop-blur-sm">
+        <div class="flex justify-between"><span>WAVES SURVIVED:</span> <span id="go-waves" class="text-orange-400">0</span></div>
+        <div class="flex justify-between"><span>WRONG ANSWERS:</span> <span id="go-wrong" class="text-orange-400">0</span></div>
+        <div class="border-t border-red-900/30 pt-2 mt-2 flex justify-between"><span>BEST WAVES:</span> <span id="go-best" class="text-yellow-400">0</span></div>
+      </div>
+      <button onclick="startGame()" class="border border-red-600 bg-red-950/20 hover:bg-red-600 hover:text-black px-8 py-3 tracking-widest transition duration-200 font-bold">TRY AGAIN</button>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-xs text-neutral-600 tracking-widest z-10">
+    MELTDOWN v2.1 // SURVIVE THE HEAT
+  </footer>
+
+  <script>
+    // --- ADVANCED WEB AUDIO HORROR ENGINE ---
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } else if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playCreepyHorrorStinger() {
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+
+      // Deep unsettling sub-bass drone
+      const subOsc = audioCtx.createOscillator();
+      const subGain = audioCtx.createGain();
+      subOsc.type = 'triangle';
+      subOsc.frequency.setValueAtTime(80, now);
+      subOsc.frequency.exponentialRampToValueAtTime(25, now + 1.2);
+      
+      subGain.gain.setValueAtTime(0.8, now);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
+
+      subOsc.connect(subGain);
+      subGain.connect(audioCtx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 1.3);
+
+      // Distorted metallic screech
+      const screamOsc = audioCtx.createOscillator();
+      const screamGain = audioCtx.createGain();
+      screamOsc.type = 'sawtooth';
+      screamOsc.frequency.setValueAtTime(420, now);
+      screamOsc.frequency.linearRampToValueAtTime(310, now + 0.4);
+      screamOsc.frequency.linearRampToValueAtTime(540, now + 0.9);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1200, now);
+      filter.Q.value = 8;
+
+      screamGain.gain.setValueAtTime(0.25, now);
+      screamGain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+
+      screamOsc.connect(filter);
+      filter.connect(screamGain);
+      screamGain.connect(audioCtx.destination);
+      screamOsc.start(now);
+      screamOsc.stop(now + 1.0);
+    }
+
+    function playEruptionExplosion() {
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+
+      // Massive sub-bass explosion
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(20, now + 2.0);
+
+      gain.gain.setValueAtTime(1.0, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 2.2);
+
+      // Heavy white noise eruption roar
+      const bufferSize = audioCtx.sampleRate * 2.0;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(800, now);
+      filter.frequency.exponentialRampToValueAtTime(150, now + 2.0);
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.8, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+      whiteNoise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(audioCtx.destination);
+      whiteNoise.start(now);
+      whiteNoise.stop(now + 2.0);
+    }
+
+    function playCorrectSound() {
+      initAudio();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(480, now + 0.3);
+
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.4);
+    }
+
+    // --- MASSIVE EXPANDED TRIVIA BANK ---
+    const masterQuestionBank = [
+      {
+        facts: [
+          { text: "Octopuses have three hearts and blue blood.", isLie: false },
+          { text: "Wombat poop is uniquely cube-shaped.", isLie: false },
+          { text: "Sharks can comfortably breathe air on land like humans.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "A single day on Venus is longer than its year.", isLie: false },
+          { text: "Botanically speaking, bananas are classified as berries.", isLie: false },
+          { text: "Goldfish naturally have a memory span of only three seconds.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Honey never spoils over thousands of years.", isLie: false },
+          { text: "Humans share 50% of their DNA with bananas.", isLie: false },
+          { text: "Lightning never strikes the same geographic place twice.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Sharks existed on Earth before trees.", isLie: false },
+          { text: "Cleopatra lived closer to iPhones than the Pyramids.", isLie: false },
+          { text: "The Great Wall of China is easily visible from the Moon.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Hot water can freeze faster than cold water under certain conditions.", isLie: false },
+          { text: "Pineapples take nearly two years to grow to harvest.", isLie: false },
+          { text: "Vampire bats can run across the ground as fast as house cats.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Neutron star teaspoons weigh billions of tons.", isLie: false },
+          { text: "The Eiffel Tower grows taller during hot summer days.", isLie: false },
+          { text: "Humans are the only animals that practice delayed gratification.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Cows have best friends and get stressed when separated.", isLie: false },
+          { text: "Sea otters hold hands while sleeping so they don't drift apart.", isLie: false },
+          { text: "Penguins can fly short distances underwater like hummingbirds.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Saturn would float in a giant bathtub of water.", isLie: false },
+          { text: "Neutron stars spin at a rate of hundreds of rotations per second.", isLie: false },
+          { text: "The sun emits a loud roaring sound that travels across space.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Your stomach lining replaces itself every few days to avoid digesting itself.", isLie: false },
+          { text: "Humans shed about 600,000 particles of skin every hour.", isLie: false },
+          { text: "Bones are completely lifeless structures once full adult height is reached.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Oxford University is older than the Aztec Empire.", isLie: false },
+          { text: "Nintendo was founded in 1889 as a playing card company.", isLie: false },
+          { text: "Ancient Romans used crushed mouse brains as toothpaste.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Australia is wider than the distance from London to Moscow.", isLie: false },
+          { text: "Russia has a larger surface area than the planet Pluto.", isLie: false },
+          { text: "The continent of Africa is located entirely within the Northern Hemisphere.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Flamingos are pink because of the beta-carotene in their diet.", isLie: false },
+          { text: "Sloths can hold their breath longer than dolphins can.", isLie: false },
+          { text: "Chameleons change their skin color primarily to camouflage with background foliage.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Cats cannot taste sweet flavors due to a genetic mutation.", isLie: false },
+          { text: "Sea otters have the densest fur of any animal on Earth.", isLie: false },
+          { text: "Porcupines are unable to swim because their quills sink them.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Humans are the only primates with colored eyes.", isLie: false },
+          { text: "Your nose and ears never stop growing throughout your entire life.", isLie: false },
+          { text: "Fingernails grow four times faster than toenails.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Mount Everest is not the tallest mountain from base to peak.", isLie: false },
+          { text: "There are more trees on Earth than stars in the Milky Way galaxy.", isLie: false },
+          { text: "The Sahara Desert was completely covered in thick ice during the last ice age.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "A group of crows is murder, and a group of flamingos is a flamboyance.", isLie: false },
+          { text: "Jellyfish are composed of over 95 percent water.", isLie: false },
+          { text: "Starfish have brains that coordinate their movement across the ocean floor.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Sharks are immune to almost all known diseases and cancer.", isLie: false },
+          { text: "Houseflies hum in the key of F natural.", isLie: false },
+          { text: "Bats are completely blind and rely entirely on sonar echo location.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Light takes over eight minutes to travel from the Sun to Earth.", isLie: false },
+          { text: "Neutron stars possess magnetic fields trillions of times stronger than Earth's.", isLie: false },
+          { text: "Black holes are solid physical spheres made of compressed iron.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "The human brain uses twenty percent of the body's total energy.", isLie: false },
+          { text: "Human thigh bones are stronger than solid concrete of the same size.", isLie: false },
+          { text: "The human heart stops beating every time you sneeze.", isLie: true }
+        ]
+      },
+      {
+        facts: [
+          { text: "Vikings wore horned helmets into battle during raids.", isLie: true },
+          { text: "Albert Einstein failed high school mathematics classes.", isLie: true },
+          { text: "Thomas Edison invented the very first working light bulb.", isLie: true }
+        ]
+      }
+    ];
+
+    let availableQuestions = [];
+    let state = {
+      screen: 'TITLE',
+      wave: 1,
+      lavaLevel: 15,
+      targetLavaLevel: 15,
+      wrongCount: 0,
+      currentQuestion: null,
+      horrorLevel: 0,
+      isErupting: false
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateBestScoreDisplay();
+      initCanvas();
+    });
+
+    function updateBestScoreDisplay() {
+      const best = localStorage.getItem('meltdown_best_waves') || 0;
+      document.getElementById('title-best').innerText = `BEST WAVES: ${best}`;
+    }
+
+    function showScreen(screenId) {
+      ['screen-title', 'screen-howto', 'screen-game', 'screen-gameover'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(screenId).classList.remove('hidden');
+      document.getElementById('hud').style.display = (screenId === 'screen-game') ? 'flex' : 'none';
+      state.screen = screenId;
+    }
+
+    function showTitle() { showScreen('screen-title'); updateBestScoreDisplay(); }
+    function showHowTo() { showScreen('screen-howto'); }
+
+    function startGame() {
+      initAudio();
+      state.wave = 1;
+      state.lavaLevel = 15;
+      state.targetLavaLevel = 15;
+      state.wrongCount = 0;
+      state.horrorLevel = 0;
+      state.isErupting = false;
+      
+      availableQuestions = [...masterQuestionBank].sort(() => Math.random() - 0.5);
+      showScreen('screen-game');
+      loadNewRound();
+    }
+
+    function loadNewRound() {
+      if (state.isErupting) return;
+
+      document.getElementById('hud-round').innerText = String(state.wave).padStart(2, '0');
+      
+      const heatEl = document.getElementById('hud-heat');
+      if (state.lavaLevel < 35) {
+        heatEl.innerText = "SAFE";
+        heatEl.className = "text-orange-400";
+      } else if (state.lavaLevel < 65) {
+        heatEl.innerText = "RISING";
+        heatEl.className = "text-orange-500";
+      } else if (state.lavaLevel < 85) {
+        heatEl.innerText = "INTENSE";
+        heatEl.className = "text-red-500 font-bold";
+      } else {
+        heatEl.innerText = "CRITICAL";
+        heatEl.className = "text-red-600 font-black animate-pulse";
+      }
+
+      if (state.wave > 12 || state.lavaLevel > 60) {
+        state.horrorLevel = 2;
+        document.getElementById('horror-status').style.opacity = '1';
+      } else if (state.wave > 6 || state.lavaLevel > 35) {
+        state.horrorLevel = 1;
+        document.getElementById('horror-status').style.opacity = '0.5';
+      } else {
+        state.horrorLevel = 0;
+        document.getElementById('horror-status').style.opacity = '0';
+      }
+
+      if (availableQuestions.length === 0) {
+        availableQuestions = [...masterQuestionBank].sort(() => Math.random() - 0.5);
+      }
+      const qSet = availableQuestions.pop();
+      state.currentQuestion = qSet;
+
+      const container = document.getElementById('facts-container');
+      container.innerHTML = '';
+
+      qSet.facts.forEach((fact, index) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-5 border border-red-900/40 bg-red-950/20 hover:bg-red-900/30 hover:border-red-600 transition duration-200 flex items-center space-x-6 backdrop-blur-md rounded-sm shadow-lg";
+        btn.innerHTML = `<span class="text-red-500 font-bold text-xl">${String.fromCharCode(65 + index)}</span> <span class="text-neutral-100 text-lg leading-relaxed">${fact.text}</span>`;
+        btn.onclick = () => handleChoice(fact.isLie);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleChoice(isLie) {
+      if (state.isErupting) return;
+
+      if (isLie) {
+        state.targetLavaLevel = Math.max(10, state.targetLavaLevel - 8);
+        playCorrectSound();
+      } else {
+        state.targetLavaLevel = Math.min(100, state.targetLavaLevel + 16);
+        state.wrongCount++;
+        
+        playCreepyHorrorStinger();
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 350);
+      }
+
+      state.wave++;
+
+      if (state.targetLavaLevel >= 100) {
+        triggerEruption();
+      } else {
+        loadNewRound();
+      }
+    }
+
+    function triggerEruption() {
+      state.isErupting = true;
+      state.targetLavaLevel = 100;
+
+      ['screen-game', 'hud'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+
+      playEruptionExplosion();
+
+      const root = document.getElementById('body-root');
+      root.classList.add('erupting');
+      root.classList.add('shake');
+
+      setTimeout(() => {
+        root.classList.remove('erupting');
+        root.classList.remove('shake');
+        triggerGameOver();
+      }, 1200);
+    }
+
+    function triggerGameOver() {
+      const wavesSurvived = state.wave - 1;
+      let bestWaves = localStorage.getItem('meltdown_best_waves') || 0;
+      if (wavesSurvived > bestWaves) {
+        localStorage.setItem('meltdown_best_waves', wavesSurvived);
+        bestWaves = wavesSurvived;
+      }
+
+      document.getElementById('go-waves').innerText = wavesSurvived;
+      document.getElementById('go-wrong').innerText = state.wrongCount;
+      document.getElementById('go-best').innerText = bestWaves;
+
+      showScreen('screen-gameover');
+    }
+
+    // --- CANVAS LAVA & VOLCANIC DEBRIS RENDERER ---
+    let canvas, ctx, animId;
+    let particles = [];
+    let entityTimer = 0;
+
+    function initCanvas() {
+      canvas = document.getElementById('lava-canvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          radius: Math.random() * 2.5 + 1,
+          speed: Math.random() * 1.2 + 0.3,
+          opacity: Math.random() * 0.6 + 0.1
+        });
+      }
+
+      animateScene();
+    }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawCornerCracks() {
+      if (state.wrongCount === 0 || state.screen !== 'screen-game') return;
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(230, 235, 245, 0.85)';
+      ctx.lineWidth = 1.3;
+      ctx.shadowColor = '#ff2200';
+      ctx.shadowBlur = 8;
+
+      const intensity = Math.min(state.wrongCount, 6);
+
+      if (intensity >= 1) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width, 0);
+        ctx.lineTo(canvas.width - 140, 50);
+        ctx.lineTo(canvas.width - 90, 130);
+        ctx.lineTo(canvas.width - 180, 160);
+        ctx.stroke();
+      }
+
+      if (intensity >= 2) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(120, 60);
+        ctx.lineTo(70, 150);
+        ctx.lineTo(170, 190);
+        ctx.stroke();
+      }
+
+      if (intensity >= 3) {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width, canvas.height);
+        ctx.lineTo(canvas.width - 130, canvas.height - 90);
+        ctx.lineTo(canvas.width - 80, canvas.height - 170);
+        ctx.stroke();
+      }
+
+      if (intensity >= 4) {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        ctx.lineTo(110, canvas.height - 110);
+        ctx.lineTo(60, canvas.height - 200);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function animateScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const time = Date.now() * 0.002;
+
+      const goalLava = state.screen === 'screen-game' || state.isErupting ? state.targetLavaLevel : 15;
+      state.lavaLevel += (goalLava - state.lavaLevel) * 0.08;
+
+      ctx.fillStyle = 'rgba(255, 100, 30, 0.4)';
+      particles.forEach(p => {
+        p.y -= (state.isErupting ? p.speed * 4 : p.speed);
+        if (p.y < 0) p.y = canvas.height;
+        ctx.globalAlpha = p.opacity;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const baseLavaY = canvas.height * (1 - (state.lavaLevel / 100));
+
+      const gradient = ctx.createLinearGradient(0, baseLavaY, 0, canvas.height);
+      gradient.addColorStop(0, '#ff3300');
+      gradient.addColorStop(0.35, '#b91c1c');
+      gradient.addColorStop(0.7, '#660000');
+      gradient.addColorStop(1, '#1a0000');
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height);
+      ctx.lineTo(0, baseLavaY);
+
+      for (let x = 0; x <= canvas.width; x += 20) {
+        let waveHeight = Math.sin(x * 0.01 + time) * 16 + Math.cos(x * 0.02 - time * 1.5) * 10;
+        if (state.isErupting) waveHeight *= 2.5;
+        ctx.lineTo(x, baseLavaY + waveHeight);
+      }
+
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.closePath();
+      ctx.fill();
+
+      drawCornerCracks();
+
+      if (state.screen === 'screen-game' && state.horrorLevel >= 2) {
+        entityTimer++;
+        if (entityTimer > 250) {
+          ctx.globalAlpha = 0.4 + Math.sin(time * 6) * 0.2;
+          ctx.fillStyle = '#fffae6';
+          const eyeX = canvas.width * 0.5 + Math.sin(time) * 120;
+          const eyeY = baseLavaY + 40;
+          
+          ctx.beginPath();
+          ctx.arc(eyeX - 18, eyeY, 3.5, 0, Math.PI * 2);
+          ctx.arc(eyeX + 18, eyeY, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (entityTimer > 380) entityTimer = 0;
+        }
+      }
+
+      animId = requestAnimationFrame(animateScene);
+    }
+  </script>
+</body>
+</html>
